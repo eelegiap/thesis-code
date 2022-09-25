@@ -161,6 +161,7 @@ function drawScatter(selectedModel) {
             .attr("x", -margin.top)
             .text("y")
 
+        var dotRad = 5
         // Add dots
         var dots = svg.append('g')
             .selectAll("dot")
@@ -172,20 +173,15 @@ function drawScatter(selectedModel) {
             })
             .attr("cx", function (d) { return x(d.ux); })
             .attr("cy", function (d) { return y(d.uy); })
-            .attr("r", 5)
+            .attr("r", dotRad)
             .style("fill", d => fill(d.label))
             .style('opacity', .4)
+            .style('stroke','white')
 
-        dots.on('mouseover', function () {
-            d3.select(this).transition(300).attr('r', 9)
-            d3.select(this).transition(350).style('stroke', 'black')
-        }).on('click', function (d) {
+        dots.on('click', function (d) {
             d3.select('#author').text(d.info.Author)
             d3.select('#boa').text(`(${d.info['Before or after']} invasion)`)
             d3.select('#text').html(d.info.Text.replaceAll('\n', '<br>'))
-        }).on('mouseout', function () {
-            d3.select(this).transition(300).attr('r', 5)
-            d3.select(this).transition(350).style('stroke', 'white')
         })
 
         svg.append("circle").attr('class', 'before legend').attr("cx", width - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0])
@@ -206,6 +202,26 @@ function drawScatter(selectedModel) {
         }).on('mouseout', function () {
             d3.selectAll('.after').transition().style('opacity', .4)
             d3.selectAll('.before').transition().style('opacity', .4)
+        })
+
+        d3.selectAll('.dot').on('mouseover', function() {
+            var thisDot = d3.select(this)
+            thisDot.transition(200).style('stroke','black')
+            thisDot.transition(300).attr('r',11)
+
+            var var1 = '.' + thisDot.attr('class').replace(' dot','')
+            var var2 = var1 == '.after' ? '.before' : '.after'
+            d3.selectAll(var1).transition().style('opacity', .8)
+            d3.selectAll(var2).transition().style('opacity', .05)
+        }).on('mouseout', function() {
+            var thisDot = d3.select(this)
+            thisDot.transition(200).style('stroke','white')
+            thisDot.transition(300).attr('r',dotRad)
+
+            var var1 = '.' + thisDot.attr('class').replace(' dot','')
+            var var2 = var1 == '.after' ? '.before' : '.after'
+            d3.selectAll(var1).transition().style('opacity', .4)
+            d3.selectAll(var2).transition().style('opacity', .4)
         })
 
     })
