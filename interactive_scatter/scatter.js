@@ -1,32 +1,32 @@
 var margin = { top: 10, right: 30, bottom: 40, left: 50 },
-width = $('#scatterdiv').width() - margin.left - margin.right,
-height = 700 - margin.top - margin.bottom;
+    width = $('#scatterdiv').width() - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
 
 const colors = ['limegreen', 'BlueViolet']
 
-function fill(n) {
+function colorTime(n) {
     return colors[n]
 }
 
 var models = [
     'distiluse-base-multilingual-cased-v1',
     'paraphrase-multilingual-MiniLM-L12-v2',
-    'all-distilroberta-v1',
-    'all-MiniLM-L6-v2',
+    // 'all-distilroberta-v1',
+    // 'all-MiniLM-L6-v2',
     'paraphrase-multilingual-mpnet-base-v2',
-    'multi-qa-MiniLM-L6-cos-v1',
-    'msmarco-MiniLM-L6-cos-v5',
+    // 'multi-qa-MiniLM-L6-cos-v1',
+    // 'msmarco-MiniLM-L6-cos-v5',
 ]
-var sources =         ['No War Poetry',
-'metajournal',
-'ROAR',
-'Facebook',
+var sources = ['No War Poetry',
+    'metajournal',
+    'ROAR',
+    'Facebook',
     'Personal Telegram']
 
-    // Usually you have a color scale in your chart already
+// Usually you have a color scale in your chart already
 var colorSource = d3.scaleOrdinal()
-.domain(sources)
-.range(d3.schemeCategory10);
+    .domain(sources)
+    .range(d3.schemeCategory10);
 
 // coloring button
 d3.select("#modelSelect")
@@ -46,7 +46,6 @@ d3.select("#colorSelect")
     .text(function (d) { return d; }) // text showed in the menu
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-
 var selectedModel = 'paraphrase-multilingual-MiniLM-L12-v2'
 d3.select('#modelSelect').property('value', selectedModel);
 
@@ -64,10 +63,10 @@ d3.select("#colorSelect").on("change", function (d) {
         d3.selectAll('.legend').remove()
         d3.select('svg').append("circle").attr('class', 'before legend').attr("cx", width - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0])
         d3.select('svg').append("circle").attr('class', 'after legend').attr("cx", width - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1])
-        d3.select('svg').append("text").attr('class', 'before legend').attr("x", width - 80).attr("y", 33).text("Pre-invasion").style("font-size", "15px").style('fill',colors[0])
-        d3.select('svg').append("text").attr('class', 'after legend').attr("x", width - 80).attr("y", 63).text("Post-invasion").style("font-size", "15px").style('fill',colors[1])
+        d3.select('svg').append("text").attr('class', 'before legend').attr("x", width - 80).attr("y", 33).text("Pre-invasion").style("font-size", "15px").style('fill', colors[0])
+        d3.select('svg').append("text").attr('class', 'after legend').attr("x", width - 80).attr("y", 63).text("Post-invasion").style("font-size", "15px").style('fill', colors[1])
 
-        d3.selectAll('.dot').transition().style("fill", d => fill(d.label))
+        d3.selectAll('.dot').transition().style("fill", d => colorTime(d.label))
     }
     if (selectedOption == 'Source') {
         console.log('source')
@@ -78,7 +77,7 @@ d3.select("#colorSelect").on("change", function (d) {
             .data(sources)
             .enter()
             .append("circle")
-            .attr('class','legend')
+            .attr('class', 'legend')
             .attr("cx", width - 100)
             .attr("cy", function (d, i) { return 30 + i * 30 }) // 100 is where the first dot appears. 25 is the distance between dots
             .attr("r", 6)
@@ -89,7 +88,7 @@ d3.select("#colorSelect").on("change", function (d) {
             .data(sources)
             .enter()
             .append("text")
-            .attr('class','legend')
+            .attr('class', 'legend')
             .attr("x", width - 80)
             .attr("y", function (d, i) { return 30 + i * 30 }) // 100 is where the first dot appears. 25 is the distance between dots
             .style("fill", function (d) { return colorSource(d) })
@@ -103,7 +102,7 @@ d3.select("#colorSelect").on("change", function (d) {
 
 function drawScatter(selectedModel) {
 
-    console.log(selectedModel)
+    d3.select('input').property('value','')
     d3.select('#colorSelect').property('value', 'Pre vs. Post');
 
     $('#scatter').empty()
@@ -118,8 +117,8 @@ function drawScatter(selectedModel) {
             "translate(" + margin.left + "," + margin.top + ")")
 
     //Read the data
-    d3.json(`cleanermodels/${selectedModel}_9-24_800_each_v2.json`, function (data) {
-    // d3.json(`models/${selectedModel}_9-24_800_each.json`, function (data) {
+    d3.json(`newmodels/${selectedModel}_9-29_800_each_v0.json`, function (data) {
+        // d3.json(`models/${selectedModel}_9-24_800_each.json`, function (data) {
         // console.log(jsonData)
         // var model = 'paraphrase-multilingual-MiniLM-L12-v2'
         // var data = jsonData[model]
@@ -171,23 +170,24 @@ function drawScatter(selectedModel) {
             .attr('class', function (d) {
                 return ['before dot', 'after dot'][d.label]
             })
+            .attr('id', function (d, i) { return i })
             .attr("cx", function (d) { return x(d.ux); })
             .attr("cy", function (d) { return y(d.uy); })
             .attr("r", dotRad)
-            .style("fill", d => fill(d.label))
+            .style("fill", d => colorTime(d.label))
             .style('opacity', .4)
-            .style('stroke','white')
+            .style('stroke', 'white')
 
         dots.on('click', function (d) {
-            d3.select('#author').text(d.info.Author)
-            d3.select('#boa').text(`(${d.info['Before or after']} invasion)`)
+            d3.select('#author').text(`Author: ${d.info.Author}`)
+            d3.select('#boa').text(`Time period: (${d.info['Before or after']} invasion)`)
             d3.select('#text').html(d.info.Text.replaceAll('\n', '<br>'))
         })
 
         svg.append("circle").attr('class', 'before legend').attr("cx", width - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0])
         svg.append("circle").attr('class', 'after legend').attr("cx", width - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1])
-        svg.append("text").attr('class', 'before legend').attr("x", width - 80).attr("y", 33).text("Pre-invasion").style("font-size", "15px").style('fill',colors[0])
-        svg.append("text").attr('class', 'after legend').attr("x", width - 80).attr("y", 63).text("Post-invasion").style("font-size", "15px").style('fill',colors[1])
+        svg.append("text").attr('class', 'before legend').attr("x", width - 80).attr("y", 33).text("Pre-invasion").style("font-size", "15px").style('fill', colors[0])
+        svg.append("text").attr('class', 'after legend').attr("x", width - 80).attr("y", 63).text("Post-invasion").style("font-size", "15px").style('fill', colors[1])
 
         d3.selectAll('.before').on('mouseover', function () {
             d3.selectAll('.before').transition().style('opacity', .8)
@@ -204,25 +204,78 @@ function drawScatter(selectedModel) {
             d3.selectAll('.before').transition().style('opacity', .4)
         })
 
-        d3.selectAll('.dot').on('mouseover', function() {
+        d3.selectAll('.dot').on('mouseover', function () {
             var thisDot = d3.select(this)
-            thisDot.transition(200).style('stroke','black')
-            thisDot.transition(300).attr('r',11)
+            thisDot.transition(200).style('stroke', 'black')
+            thisDot.transition(300).attr('r', 11)
 
-            var var1 = '.' + thisDot.attr('class').replace(' dot','')
+            var var1 = '.' + thisDot.attr('class').replace(' dot', '')
             var var2 = var1 == '.after' ? '.before' : '.after'
             d3.selectAll(var1).transition().style('opacity', .8)
             d3.selectAll(var2).transition().style('opacity', .05)
-        }).on('mouseout', function() {
+        }).on('mouseout', function () {
             var thisDot = d3.select(this)
-            thisDot.transition(200).style('stroke','white')
-            thisDot.transition(300).attr('r',dotRad)
+            thisDot.transition(200).style('stroke', 'white')
+            thisDot.transition(300).attr('r', dotRad)
 
-            var var1 = '.' + thisDot.attr('class').replace(' dot','')
+            var var1 = '.' + thisDot.attr('class').replace(' dot', '')
             var var2 = var1 == '.after' ? '.before' : '.after'
             d3.selectAll(var1).transition().style('opacity', .4)
             d3.selectAll(var2).transition().style('opacity', .4)
         })
 
+        // text box
+        var textInput = d3.select('input')
+        textInput.on('keyup', function () {
+            d3.selectAll('.toclear').html('')
+            d3.select('#afterCt').html('')
+            var val = d3.select(this).property('value')
+            // if (val != '') {
+                var containsText = []
+                data.forEach(function (d, i) {
+                    var text = d.info.Text
+                    if (text == 0) {
+                        text = ''
+                    }
+                    if (text.includes(val)) {
+                        containsText.push(i)
+                    }
+                })
+
+                var beforeDots = 0
+                var afterDots = 0
+
+                d3.selectAll('.dot').each(function (d, i) {
+                    var thisDot = d3.select(this)
+                    if (containsText.includes(i)) {
+                        thisDot.transition(50).attr("pointer-events", "all")
+                        thisDot.transition(200).style('fill', chooseColor(d))
+                        thisDot.transition(250).style('stroke', 'white')
+                        if (d.label == 0) {
+                            beforeDots += 1
+                        } else {
+                            afterDots += 1
+                        }
+                    }  else {
+                        thisDot.transition(50).attr("pointer-events", "none")
+                        thisDot.transition(200).style('fill', 'transparent')
+                        thisDot.transition(250).style('stroke', 'transparent')
+                    }
+                    d3.select('#beforeCt').html(`${beforeDots} poems from <b>before</b> contain "${val}"`)
+                    d3.select('#afterCt').html(`${afterDots} poems from <b>after</b> contain "${val}"`)
+                })
+            // } else {
+            //     // d3.selectAll('.dot').transition(50).attr("pointer-events", "none")
+            //     // d3.selectAll('.dot').transition(200).style('fill', chooseColor(d))
+            //     // d3.selectAll('.dot').transition(250).style('stroke', 'transparent')
+            // }
+        })
     })
+    function chooseColor(d) {
+        if (d3.select('#colorSelect').property("value") == 'Pre vs. Post') {
+            return colorTime(d.label)
+        } else {
+            return colorSource(d.info.Source)
+        }
+    }
 }
