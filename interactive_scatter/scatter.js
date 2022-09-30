@@ -102,7 +102,7 @@ d3.select("#colorSelect").on("change", function (d) {
 
 function drawScatter(selectedModel) {
 
-    d3.select('input').property('value','')
+    d3.select('input').property('value', '')
     d3.select('#colorSelect').property('value', 'Pre vs. Post');
 
     $('#scatter').empty()
@@ -225,51 +225,95 @@ function drawScatter(selectedModel) {
         })
 
         // text box
-        var textInput = d3.select('input')
-        textInput.on('keyup', function () {
+        // var textInput = d3.select('input')
+        var input = document.getElementById("input");
+
+        // Execute a function when the user presses a key on the keyboard
+        input.addEventListener("keypress", function(event) {
+          // If the user presses the "Enter" key on the keyboard
+          if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
             d3.selectAll('.toclear').html('')
-            d3.select('#afterCt').html('')
+            $('.toclear').empty()
             var val = d3.select(this).property('value')
             // if (val != '') {
-                var containsText = []
-                data.forEach(function (d, i) {
-                    var text = d.info.Text
-                    if (text == 0) {
-                        text = ''
-                    }
-                    if (text.includes(val)) {
-                        containsText.push(i)
-                    }
-                })
-
-                var beforeDots = 0
-                var afterDots = 0
-
-                d3.selectAll('.dot').each(function (d, i) {
-                    var thisDot = d3.select(this)
-                    if (containsText.includes(i)) {
-                        thisDot.transition(50).attr("pointer-events", "all")
-                        thisDot.transition(200).style('fill', chooseColor(d))
-                        thisDot.transition(250).style('stroke', 'white')
-                        if (d.label == 0) {
-                            beforeDots += 1
-                        } else {
-                            afterDots += 1
+            var containsText = []
+            var linesWithStr = {
+                'Before' : [],
+                'After' : []
+            }
+            data.forEach(function (d, i) {
+                var text = d.info.Text
+                if (text == 0) {
+                    text = ''
+                }
+                if (text.toLowerCase().includes(val.toLowerCase())) {
+                    containsText.push(i)
+                    
+                    text.split('\n').forEach(function (line) {
+                        if (line.toLowerCase().includes(val)) {
+                            linesWithStr[d.info['Before or after']].push(line)
                         }
-                    }  else {
-                        thisDot.transition(50).attr("pointer-events", "none")
-                        thisDot.transition(200).style('fill', 'transparent')
-                        thisDot.transition(250).style('stroke', 'transparent')
+                    })
+                }
+            })
+
+            var beforeDots = 0
+            var afterDots = 0
+
+            d3.selectAll('.dot').each(function (d, i) {
+                var thisDot = d3.select(this)
+                if (containsText.includes(i)) {
+                    thisDot.transition(50).attr("pointer-events", "all")
+                    thisDot.transition(200).style('fill', chooseColor(d))
+                    thisDot.transition(250).style('stroke', 'white')
+                    if (d.label == 0) {
+                        beforeDots += 1
+                    } else {
+                        afterDots += 1
                     }
-                    d3.select('#beforeCt').html(`${beforeDots} poems from <b>before</b> contain "${val}"`)
-                    d3.select('#afterCt').html(`${afterDots} poems from <b>after</b> contain "${val}"`)
-                })
+                } else {
+                    thisDot.transition(50).attr("pointer-events", "none")
+                    thisDot.transition(200).style('fill', 'transparent')
+                    thisDot.transition(250).style('stroke', 'transparent')
+                } 
+            })
+            d3.select('#beforeCt').html(`${beforeDots} poems from <b>before</b> contain "${val}"`)
+            d3.select('#afterCt').html(`${afterDots} poems from <b>after</b> contain "${val}"`)
+
+            var shuffledBefore = shuffle(linesWithStr['Before'])
+            var shuffledAfter = shuffle(linesWithStr['After'])
+
+            d3.select('#beforelines').append('p').html(`<b>Lines from before containing ${val}</b>`)
+            d3.select('#afterlines').append('p').html(`<b>Lines from after containing ${val}</b>`)
+
+            d3.select('#beforelines')
+                .append('p')
+                .selectAll("line")
+                .data(shuffledBefore.slice(0,10))
+                .enter()
+                .append('p')
+                .text(d => d)
+
+            d3.select('#afterlines')
+                .append('p')
+                .selectAll("line")
+                .data(shuffledAfter.slice(0,10))
+                .enter()
+                .append('p')
+                .text(d => d)
             // } else {
             //     // d3.selectAll('.dot').transition(50).attr("pointer-events", "none")
             //     // d3.selectAll('.dot').transition(200).style('fill', chooseColor(d))
             //     // d3.selectAll('.dot').transition(250).style('stroke', 'transparent')
             // }
-        })
+
+          }
+        }); 
+
+
+           
     })
     function chooseColor(d) {
         if (d3.select('#colorSelect').property("value") == 'Pre vs. Post') {
@@ -278,4 +322,21 @@ function drawScatter(selectedModel) {
             return colorSource(d.info.Source)
         }
     }
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }
 }
