@@ -117,7 +117,7 @@ function drawScatter(selectedModel) {
             "translate(" + margin.left + "," + margin.top + ")")
 
     //Read the data
-    d3.json(`newmodels/${selectedModel}_9-29_800_each_v0.json`, function (data) {
+    d3.json(`models930/${selectedModel}_9-29_800_each_v0.json`, function (data) {
         // d3.json(`models/${selectedModel}_9-24_800_each.json`, function (data) {
         // console.log(jsonData)
         // var model = 'paraphrase-multilingual-MiniLM-L12-v2'
