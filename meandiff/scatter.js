@@ -19,15 +19,14 @@ function draw(dataType) {
     const utcParse = d3.utcParse("%m-%d-%Y");
 
     //Read the data
-    d3.json(`../data/${dataType}/frequencydatabypoem.json`, function (data) {
+    d3.json(`countData10-5.json`, function (data) {
 
+        // length of lemma
         data = data.filter(d => d.lemma.length > 1)
-        var SD;
-        if (dataType == 'notPEN') {
-            SD = 1.6252581880775219
-        } else {
-        SD = 2.0943217455517074
-        }
+        // number of examples total
+        data = data.filter(d => (d.before + d.after) > 100)
+        // var SD = 2.122988185818
+        var SD = 18.1090517286350
 
         // Add X axis
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
@@ -106,7 +105,7 @@ function draw(dataType) {
                 }
             })
 
-        morefreq = morefreq.sort(function (a, b) { return a.ct2022 < b.ct2022 })
+        morefreq = morefreq.sort(function (a, b) { return a.after < b.after })
         morefreq.unshift('N/A')
         var morerows = d3.select('#morefreq').selectAll("tr")
             .data(morefreq)
@@ -117,14 +116,14 @@ function draw(dataType) {
             .text(d => d.lemma)
         morerows
             .append("td")
-            .text(d => d.ct2014)
+            .text(d => d.before)
             .style('color', 'tomato')
         morerows
             .append("td")
-            .text(d => d.ct2022)
+            .text(d => d.after)
             .style('color', 'green')
 
-        lessfreq = lessfreq.sort(function (a, b) { return a.ct2014 < b.ct2014 })
+        lessfreq = lessfreq.sort(function (a, b) { return a.before < b.before })
         lessfreq.unshift('N/A')
         var lessrows = d3.select('#lessfreq').selectAll("tr")
             .data(lessfreq)
@@ -135,11 +134,11 @@ function draw(dataType) {
             .text(d => d.lemma)
         lessrows
             .append("td")
-            .text(d => d.ct2014)
+            .text(d => d.before)
             .style('color', 'green')
         lessrows
             .append("td")
-            .text(d => d.ct2022)
+            .text(d => d.after)
             .style('color', 'tomato')
 
 
