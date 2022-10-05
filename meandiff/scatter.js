@@ -65,7 +65,7 @@ function draw(dataType) {
             .attr("x", width)
             .attr("y", height - 6)
             .attr('dx', '-1em')
-            .text("Mean (of logs)");
+            .text("Mean (of before and after)");
 
         svg.append("text")
             .attr("class", "y label")
@@ -74,7 +74,7 @@ function draw(dataType) {
             .attr("dy", "1em")
             .attr('dx', '-1em')
             .attr("transform", "rotate(-90)")
-            .text("Difference (2022 vs. 2014)");
+            .text("Difference (After - Before)");
 
         // Add dots
         var groups = svg

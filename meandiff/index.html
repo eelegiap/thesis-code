@@ -77,10 +77,18 @@
         <div class="row">
             <div class="col-md-12">
                 <div id='header' class="padding">
-                    <h2>Tukey Mean-Difference Plot (Bland-Altman Difference) of Word Frequency in Poems in 2014 vs. 2022
+                    <h2>Tukey Mean-Difference Plot (Bland-Altman Difference) of Word Frequency in poems before and after invasion
                     </h2>
                     <!-- <h1>[Insert formulas for calculating differences here.]</h1> -->
-                    <p>Count of poems containing word <span class="eq">c</span> in 2014: <span
+                    <p>Count of poems containing word <span class="eq">c</span> before invasion: <span
+                        class="eq">c<sub>before</sub></span></p>
+                    <p>Count of poems containing word <span class="eq">c</span> after invasion: <span
+                            class="eq">c<sub>after</sub></span></p>
+                    <p>X-axis (Mean of time periods): <span class="eq">[c<sub>after</sub> + c<sub>before</sub>] / 2</span>
+                    </p>
+                    <p>Y-axis (Difference of time periods): <span class="eq">c<sub>after</sub> - c<sub>before</sub></span>
+                    </p>
+                    <!-- <p>Count of poems containing word <span class="eq">c</span> in 2014: <span
                             class="eq">c<sub>2014</sub></span></p>
                     <p>Count of poems containing word <span class="eq">c</span> in 2022: <span
                             class="eq">c<sub>2022</sub></span></p>
@@ -89,7 +97,7 @@
                     </p>
                     <p>Y-axis (Difference of logs): <span class="eq">log<sub>2</sub>(c<sub>2022</sub>) -
                             log<sub>2</sub>(c<sub>2014</sub>)</span>
-                    </p>
+                    </p> -->
                 </div>
             </div>
         </div>
@@ -100,33 +108,31 @@
         </div>
         <div class="row">
             <div class="col-md-12 padding">
-                <h3>Ukrainian and Russian words that occur <span style="color: lightgreen">more frequently</span> in
-                    2022 than 2014.</h3>
+                <h3>Russian words that occur <span style="color: lightgreen">more frequently</span> after than before.</h3>
                 <table style="width:30%" id="morefreq">
                     <tr>
                       <th>Word</th>
-                      <th>Count of poems containing the word in 2014</th>
-                      <th>Count of poems containing the word in 2022</th>
+                      <th>Count of poems containing the word before</th>
+                      <th>Count of poems containing the word after</th>
                     </tr>
                   </table>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 padding">
-                <h3> Ukrainian and Russian words that occur <span style="color: tomato">less frequently</span> in 2022
-                    than 2014.</h3>
+                <h3> Russian words that occur <span style="color: tomato">less frequently</span> after than before.</h3>
                     <table style="width:30%" id="lessfreq">
                         <tr>
                           <th>Word</th>
-                          <th>Count of poems containing the word in 2014</th>
-                          <th>Count of poems containing the word in 2022</th>
+                          <th>Count of poems containing the word before</th>
+                          <th>Count of poems containing the word after</th>
                         </tr>
                       </table>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 padding">
-                <p class="note">Note: Data in the graph represents equal sample sizes of Russian and Ukrainian words.
+                <!-- <p class="note">Note: Data in the graph represents equal sample sizes of Russian and Ukrainian words.
                     Sample
                     size of Russian poems is 5000 words
                     from each year, and sample size of Ukrainian poems is 10,000 words from each year. Also, the word
@@ -136,7 +142,7 @@
                     Words are counted
                     based on the raw poem text, so if some word appears multiple times in a poem, it is counted multiple
                     times.
-                </p>
+                </p> -->
             </div>
         </div>
     <!-- </div> -->
