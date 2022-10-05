@@ -24,7 +24,7 @@ function draw(dataType) {
         // length of lemma
         data = data.filter(d => d.lemma.length > 1)
         // number of examples total
-        data = data.filter(d => (d.before + d.after) > 100)
+        data = data.filter(d => (d.before + d.after) > 50)
         // var SD = 2.122988185818
         var SD = 18.1090517286350
 
@@ -32,12 +32,12 @@ function draw(dataType) {
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
         var minY = d3.min(data.map(d => d.s_y)); var maxY = d3.max(data.map(d => d.s_y))
         var x = d3.scaleLinear()
-            .domain([minX - 1, maxX + 1])
+            .domain([0, maxX])
             .range([0, width]);
 
         // Add Y axis
         var y = d3.scaleLinear()
-            .domain([minY - 1, maxY + 1])
+            .domain([minY, maxY])
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
@@ -152,16 +152,20 @@ function draw(dataType) {
                 return y(d.s_y)
             })
             .attr('dx', '.5em')
-            .style('opacity', .75)
+            .style('opacity', .5)
             .style('font-size', `${labelFS}px`)
 
         groups.on("mouseover", function (d) {
             d3.select(this).select('circle').transition().attr('r', 7)
-            d3.select(this).select('.dotLabel').transition().style('font-size', `15px`)
+            d3.select(this).select('.dotLabel').transition(200).style('font-size', `15px`)
+            d3.selectAll('.dotLabel').transition().style('opacity',.1)
+            d3.select(this).select('.dotLabel').transition(250).style('opacity', 1)
         })
             .on("mouseout", function (d) {
                 d3.select(this).select('circle').transition().attr('r', radius)
-                d3.select(this).select('.dotLabel').transition().style('font-size', `${labelFS}px`)
+                d3.select(this).select('.dotLabel').transition(200).style('font-size', `${labelFS}px`)
+                d3.select(this).select('.dotLabel').transition(250).style('opacity', .5)
+                d3.selectAll('.dotLabel').transition().style('opacity',.5)
             })
 
         // SD line
