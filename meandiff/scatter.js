@@ -4,8 +4,8 @@ function draw(dataType) {
 
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 30, bottom: 30, left: 50 },
-        width = 1250 - margin.left - margin.right,
-        height = 700 - margin.top - margin.bottom;
+        width = 1450 - margin.left - margin.right,
+        height = 1000 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     var svg = d3.select("#scatterplot")
@@ -19,25 +19,32 @@ function draw(dataType) {
     const utcParse = d3.utcParse("%m-%d-%Y");
 
     //Read the data
-    d3.json(`countData10-5.json`, function (data) {
+    d3.json(`shakenLessLogData10-7.json`, function (data) {
+
+        var lowerThresh = -4.092195306328719
+        var upperThresh = -3.190916638805563
+        var SD = 3.19
+        var threshold = '5%'
 
         // length of lemma
         data = data.filter(d => d.lemma.length > 1)
         // number of examples total
-        data = data.filter(d => (d.before + d.after) > 50)
-        // var SD = 2.122988185818
-        var SD = 18.1090517286350
+        data = data.filter(d => ((d.before + d.after) >= 10))
+        // get rid of outliers
+        data = data.filter(d => d.lemma != 'война')
+
+        // data = data.filter(d => d.s_y > SD || d.s_y < -1*SD)
 
         // Add X axis
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
         var minY = d3.min(data.map(d => d.s_y)); var maxY = d3.max(data.map(d => d.s_y))
         var x = d3.scaleLinear()
-            .domain([0, maxX])
+            .domain([0, maxX+1])
             .range([0, width]);
 
         // Add Y axis
         var y = d3.scaleLinear()
-            .domain([minY, maxY])
+            .domain([minY-1, maxY+1])
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
@@ -89,8 +96,8 @@ function draw(dataType) {
         var lessfreq = []
         var radius = 3
         groups.append("circle")
-            .attr("cx", function (d) { return x(d.s_x); })
-            .attr("cy", function (d) { return y(d.s_y); })
+            .attr("cx", function (d) { return x(d.s_x) })
+            .attr("cy", function (d) { return y(d.s_y) })
             .attr("r", radius)
             .style('opacity', .5)
             .style("fill", function (d) {
@@ -193,14 +200,14 @@ function draw(dataType) {
             .attr('y', y(SD) - 10)
             .style('fill', 'red')
             .attr('text-anchor', 'end')
-            .text(`+ 1.96 SD`)
+            .text(`upper ${threshold} threshold (based on randomized data)`)
 
         svg.append('text')
             .attr('x', width - 10)
             .attr('y', y(-SD) + 20)
             .style('fill', 'red')
             .attr('text-anchor', 'end')
-            .text(`- 1.96 SD`)
+            .text(`lower ${threshold} threshold (based on randomized data)`)
 
     })
 }
