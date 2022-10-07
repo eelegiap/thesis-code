@@ -179,9 +179,10 @@ function drawScatter(selectedModel) {
             .style('stroke', 'white')
 
         dots.on('click', function (d) {
-            d3.select('#author').text(`Author: ${d.info.Author}`)
-            d3.select('#boa').text(`Time period: (${d.info['Before or after']} invasion)`)
-            d3.select('#text').html(d.info.Text.replaceAll('\n', '<br>'))
+            var timeClass = d.info['Before or after']
+            d3.select('#author').attr('class',timeClass).text(`Author: ${d.info.Author}`)
+            d3.select('#boa').attr('class',timeClass).text(`Time period: (${d.info['Before or after']} invasion)`)
+            d3.select('#text').attr('class', timeClass).html(d.info.Text.replaceAll('\n', '<br>'))
         })
 
         svg.append("circle").attr('class', 'before legend').attr("cx", width - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0])
@@ -279,15 +280,15 @@ function drawScatter(selectedModel) {
                         thisDot.transition(250).style('stroke', 'transparent')
                     }
                 })
-                d3.select('#beforeCt').html(`${beforeDots} poems from <b>before</b> contain "${val}"`)
-                d3.select('#afterCt').html(`${afterDots} poems from <b>after</b> contain "${val}"`)
+                d3.select('#beforeCt').html(`${beforeDots} poems from <span class='Before'><b>before</b></span> contain "${val}"`)
+                d3.select('#afterCt').html(`${afterDots} poems from <span class='After'><b>after</b></span> contain "${val}"`)
 
                 var shuffledBefore = shuffle(linesWithStr['Before'])
                 var shuffledAfter = shuffle(linesWithStr['After'])
 
                 if (val != '') {
-                    d3.select('#beforelines').append('p').html(`<b>Lines from before containing ${val}</b>`)
-                    d3.select('#afterlines').append('p').html(`<b>Lines from after containing ${val}</b>`)
+                    d3.select('#beforelines').append('p').html(`<b>Lines from <span class='Before'><b>before</b></span> containing ${val}</b>`)
+                    d3.select('#afterlines').append('p').html(`<b>Lines from <span class='After'><b>after</b></span> containing ${val}</b>`)
     
                     d3.select('#beforelines')
                         .append('p')
@@ -295,6 +296,7 @@ function drawScatter(selectedModel) {
                         .data(shuffledBefore.slice(0, 10))
                         .enter()
                         .append('p')
+                        .attr('class','Before')
                         .text(d => d)
     
                     d3.select('#afterlines')
@@ -303,6 +305,7 @@ function drawScatter(selectedModel) {
                         .data(shuffledAfter.slice(0, 10))
                         .enter()
                         .append('p')
+                        .attr('class','After')
                         .text(d => d)
                 } else {
                     d3.selectAll('.toclear').html('')
