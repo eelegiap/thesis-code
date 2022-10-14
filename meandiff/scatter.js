@@ -23,7 +23,7 @@ function draw(dataType) {
 
         var lowerThresh = -4.092195306328719
         var upperThresh = -3.190916638805563
-        var SD = 3.19
+        var SD = 1.8
         var threshold = '5%'
 
         // length of lemma
@@ -94,6 +94,7 @@ function draw(dataType) {
         // find more and less significant words
         var morefreq = []
         var lessfreq = []
+        var inmiddle = []
         var radius = 3
         groups.append("circle")
             .attr("cx", function (d) { return x(d.s_x) })
@@ -108,10 +109,13 @@ function draw(dataType) {
                     lessfreq.push(d)
                     return 'tomato'
                 } else {
+                    inmiddle.push(d)
                     return 'black'
                 }
             })
-
+        console.log('morefreq',morefreq.length)
+        console.log('lessfreq',lessfreq.length)
+        console.log('inthemiddle', inmiddle.length)
         morefreq = morefreq.sort(function (a, b) { return a.after < b.after })
         morefreq.unshift('N/A')
         var morerows = d3.select('#morefreq').selectAll("tr")
