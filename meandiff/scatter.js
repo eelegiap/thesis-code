@@ -19,32 +19,38 @@ function draw(dataType) {
     const utcParse = d3.utcParse("%m-%d-%Y");
 
     //Read the data
-    d3.json(`shakenLessLogData10-7.json`, function (data) {
+    var path2data;
+    if (dataType == 'lemmas') {
+        path2data = 'mddata/shakenLogData10-16.json'
+    } else {
+        path2data = 'mddata/shakenSynsetMeanDiff10-16.json'
+    }
 
-        var lowerThresh = -4.092195306328719
-        var upperThresh = -3.190916638805563
+    d3.json(path2data, function (data) {
+        // var lowerThresh = -4.092195306328719
+        // var upperThresh = -3.190916638805563
         var SD = 1.8
         var threshold = '5%'
 
         // length of lemma
-        data = data.filter(d => d.lemma.length > 1)
+        // data = data.filter(d => d.lemma.length > 1)
         // number of examples total
         data = data.filter(d => ((d.before + d.after) >= 10))
         // get rid of outliers
-        data = data.filter(d => d.lemma != 'война')
+        // data = data.filter(d => d.lemma != 'война')
 
-        // data = data.filter(d => d.s_y > SD || d.s_y < -1*SD)
+        data = data.filter(d => d.s_y > SD || d.s_y < -1*SD)
 
         // Add X axis
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
         var minY = d3.min(data.map(d => d.s_y)); var maxY = d3.max(data.map(d => d.s_y))
         var x = d3.scaleLinear()
-            .domain([0, maxX+1])
+            .domain([0, maxX + 1])
             .range([0, width]);
 
         // Add Y axis
         var y = d3.scaleLinear()
-            .domain([minY-1, maxY+1])
+            .domain([minY - 1, maxY + 1])
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
@@ -113,8 +119,8 @@ function draw(dataType) {
                     return 'black'
                 }
             })
-        console.log('morefreq',morefreq.length)
-        console.log('lessfreq',lessfreq.length)
+        console.log('morefreq', morefreq.length)
+        console.log('lessfreq', lessfreq.length)
         console.log('inthemiddle', inmiddle.length)
         morefreq = morefreq.sort(function (a, b) { return a.after < b.after })
         morefreq.unshift('N/A')
@@ -124,7 +130,7 @@ function draw(dataType) {
             .append("tr");
         morerows
             .append("td")
-            .text(d => d.lemma)
+            .text(d => d.translatedLabel)
         morerows
             .append("td")
             .text(d => d.before)
@@ -142,7 +148,7 @@ function draw(dataType) {
             .append("tr");
         lessrows
             .append("td")
-            .text(d => d.lemma)
+            .text(d => d.translatedLabel)
         lessrows
             .append("td")
             .text(d => d.before)
@@ -154,7 +160,7 @@ function draw(dataType) {
 
 
         var labelFS = 13
-        groups.append("text").text(d => d.lemma)
+        groups.append("text").text(d => d.translatedLabel)
             .attr('class', 'dotLabel')
             .attr("x", function (d) {
                 return x(d.s_x)
@@ -169,14 +175,14 @@ function draw(dataType) {
         groups.on("mouseover", function (d) {
             d3.select(this).select('circle').transition().attr('r', 7)
             d3.select(this).select('.dotLabel').transition(200).style('font-size', `15px`)
-            d3.selectAll('.dotLabel').transition().style('opacity',.1)
+            d3.selectAll('.dotLabel').transition().style('opacity', .1)
             d3.select(this).select('.dotLabel').transition(250).style('opacity', 1)
         })
             .on("mouseout", function (d) {
                 d3.select(this).select('circle').transition().attr('r', radius)
                 d3.select(this).select('.dotLabel').transition(200).style('font-size', `${labelFS}px`)
                 d3.select(this).select('.dotLabel').transition(250).style('opacity', .5)
-                d3.selectAll('.dotLabel').transition().style('opacity',.5)
+                d3.selectAll('.dotLabel').transition().style('opacity', .5)
             })
 
         // SD line
@@ -217,14 +223,25 @@ function draw(dataType) {
 }
 
 $(document).ready(function () {
+
+    var dataOptions = ['Individual Lemmas','Russian Synonym Sets']
     console.log("ready!");
-    draw('notPEN')
-    $('#toggle').change(function () {
-        console.log($(this).prop('checked'))
-        if ($(this).prop('checked')) {
-            draw('notPEN')
+    d3.select("#selectData")
+        .selectAll('myOptions')
+        .data(dataOptions)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; })
+
+    d3.select("#selectData").on("change", function (d) {
+        var selected = d3.select(this).property("value")
+        if (selected == 'Individual Lemmas') {
+            draw('lemmas')
         } else {
-            draw('PEN')
+            draw('synset')
         }
     })
+
+    draw('synset')
 });
