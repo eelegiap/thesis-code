@@ -26,7 +26,7 @@ function draw(dataType) {
         path2data = 'mddata/shakenLogData10-16.json'
         d3.selectAll('.keywords').style('display','none')
     } else {
-        path2data = 'mddata/shakenSynsetMeanDiff10-20.json'
+        path2data = 'mddata/shakenSynsetMeanDiff10-20_Fixed.json'
         d3.selectAll('.keywords').style('display','block')
     }
 
@@ -169,7 +169,7 @@ function draw(dataType) {
         if (dataType == 'synset') {
             lessrows
                 .append("td")
-                .text(function (d) { Object.keys(d.synsetTokens).join(', ') })
+                .text(function (d) {return  Object.keys(d.synsetTokens).join(', ') })
         }
 
         var labelFS = 13
