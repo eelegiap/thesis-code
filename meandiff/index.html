@@ -66,6 +66,9 @@
         th, td {
             padding: 5px
         }
+        .keywords {
+            min-width: 400px;
+        }
     </style>
 </head>
 
@@ -79,7 +82,8 @@
                 <div id='header' class="padding">
                     <h2>Tukey Mean-Difference Plot (Bland-Altman Difference) of Word Frequency in poems before and after invasion
                     </h2>
-                    <select id="dataSelect"></select>
+                    <select id="selectData"></select>
+                    <br><br>
                     <!-- <p>Count of poems containing word <span class="eq">c</span> before invasion: <span
                         class="eq">c<sub>before</sub></span></p>
                     <p>Count of poems containing word <span class="eq">c</span> after invasion: <span
@@ -109,11 +113,12 @@
         <div class="row">
             <div class="col-md-12 padding">
                 <h3>Russian words that occur <span style="color: lightgreen">more frequently</span> after than before.</h3>
-                <table style="width:30%" id="morefreq">
+                <table style="width:50%" id="morefreq">
                     <tr>
                       <th>Word</th>
                       <th>Count of poems containing the word before</th>
                       <th>Count of poems containing the word after</th>
+                      <th class="keywords">Keywords</th>
                     </tr>
                   </table>
             </div>
@@ -121,11 +126,12 @@
         <div class="row">
             <div class="col-md-12 padding">
                 <h3> Russian words that occur <span style="color: tomato">less frequently</span> after than before.</h3>
-                    <table style="width:30%" id="lessfreq">
+                    <table style="width:50%" id="lessfreq">
                         <tr>
                           <th>Word</th>
                           <th>Count of poems containing the word before</th>
                           <th>Count of poems containing the word after</th>
+                          <th class="keywords">Keywords</th>
                         </tr>
                       </table>
             </div>

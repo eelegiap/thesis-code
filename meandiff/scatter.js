@@ -1,6 +1,8 @@
 function draw(dataType) {
 
     d3.selectAll('svg').remove()
+    d3.selectAll('.tableRemove').remove()
+
 
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 30, bottom: 30, left: 50 },
@@ -22,8 +24,10 @@ function draw(dataType) {
     var path2data;
     if (dataType == 'lemmas') {
         path2data = 'mddata/shakenLogData10-16.json'
+        d3.selectAll('.keywords').style('display','none')
     } else {
-        path2data = 'mddata/shakenSynsetMeanDiff10-16.json'
+        path2data = 'mddata/shakenSynsetMeanDiff10-20.json'
+        d3.selectAll('.keywords').style('display','block')
     }
 
     d3.json(path2data, function (data) {
@@ -37,9 +41,7 @@ function draw(dataType) {
         // number of examples total
         data = data.filter(d => ((d.before + d.after) >= 10))
         // get rid of outliers
-        // data = data.filter(d => d.lemma != 'война')
-
-        data = data.filter(d => d.s_y > SD || d.s_y < -1*SD)
+        // data = data.filter(d => d.s_y > SD || d.s_y < -1*SD)
 
         // Add X axis
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
@@ -101,7 +103,9 @@ function draw(dataType) {
         var morefreq = []
         var lessfreq = []
         var inmiddle = []
+
         var radius = 3
+
         groups.append("circle")
             .attr("cx", function (d) { return x(d.s_x) })
             .attr("cy", function (d) { return y(d.s_y) })
@@ -119,17 +123,17 @@ function draw(dataType) {
                     return 'black'
                 }
             })
-        console.log('morefreq', morefreq.length)
-        console.log('lessfreq', lessfreq.length)
-        console.log('inthemiddle', inmiddle.length)
+
         morefreq = morefreq.sort(function (a, b) { return a.after < b.after })
         morefreq.unshift('N/A')
         var morerows = d3.select('#morefreq').selectAll("tr")
             .data(morefreq)
             .enter()
-            .append("tr");
+            .append("tr")
+            .attr('class', 'tableRemove')
         morerows
             .append("td")
+            .attr('class', 'table')
             .text(d => d.translatedLabel)
         morerows
             .append("td")
@@ -139,6 +143,11 @@ function draw(dataType) {
             .append("td")
             .text(d => d.after)
             .style('color', 'green')
+        if (dataType == 'synset') {
+            morerows
+                .append("td")
+                .text(function (d) { return Object.keys(d.synsetTokens).join(', ') })
+        }
 
         lessfreq = lessfreq.sort(function (a, b) { return a.before < b.before })
         lessfreq.unshift('N/A')
@@ -157,7 +166,11 @@ function draw(dataType) {
             .append("td")
             .text(d => d.after)
             .style('color', 'tomato')
-
+        if (dataType == 'synset') {
+            lessrows
+                .append("td")
+                .text(function (d) { Object.keys(d.synsetTokens).join(', ') })
+        }
 
         var labelFS = 13
         groups.append("text").text(d => d.translatedLabel)
@@ -224,8 +237,8 @@ function draw(dataType) {
 
 $(document).ready(function () {
 
-    var dataOptions = ['Individual Lemmas','Russian Synonym Sets']
-    console.log("ready!");
+    var dataOptions = ['Synonym Sets','Individual Lemmas']
+
     d3.select("#selectData")
         .selectAll('myOptions')
         .data(dataOptions)
