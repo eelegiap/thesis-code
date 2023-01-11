@@ -23,14 +23,17 @@ function draw(dataType) {
     //Read the data
     var path2data;
     if (dataType == 'lemmas') {
-        path2data = 'mddata/shakenLogData10-16.json'
+        path2data = 'mddata/lemmas_shakenLogData1-9.json'
         d3.selectAll('.keywords').style('display','none')
     } else {
-        path2data = 'mddata/shakenSynsetMeanDiff10-20_Fixed.json'
+        path2data = 'mddata/shakenSynsetMeanDiff1-9.json'
         d3.selectAll('.keywords').style('display','block')
     }
 
     d3.json(path2data, function (data) {
+        if (dataType == 'synsets') {
+            data.map(d => d.translatedLabel = d.label)
+        }
         // var lowerThresh = -4.092195306328719
         // var upperThresh = -3.190916638805563
         var SD = 1.8
@@ -143,7 +146,7 @@ function draw(dataType) {
             .append("td")
             .text(d => d.after)
             .style('color', 'green')
-        if (dataType == 'synset') {
+        if (dataType == 'synsets') {
             morerows
                 .append("td")
                 .text(function (d) { return Object.keys(d.synsetTokens).join(', ') })
@@ -151,10 +154,12 @@ function draw(dataType) {
 
         lessfreq = lessfreq.sort(function (a, b) { return a.before < b.before })
         lessfreq.unshift('N/A')
+console.log(lessfreq)
         var lessrows = d3.select('#lessfreq').selectAll("tr")
             .data(lessfreq)
             .enter()
-            .append("tr");
+            .append("tr")
+            .attr('class', 'tableRemove')
         lessrows
             .append("td")
             .text(d => d.translatedLabel)
@@ -166,7 +171,8 @@ function draw(dataType) {
             .append("td")
             .text(d => d.after)
             .style('color', 'tomato')
-        if (dataType == 'synset') {
+
+        if (dataType == 'synsets') {
             lessrows
                 .append("td")
                 .text(function (d) {return  Object.keys(d.synsetTokens).join(', ') })
@@ -252,9 +258,9 @@ $(document).ready(function () {
         if (selected == 'Individual Lemmas') {
             draw('lemmas')
         } else {
-            draw('synset')
+            draw('synsets')
         }
     })
 
-    draw('synset')
+    draw('synsets')
 });

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Word Co-occurrence Network</title>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3"></script>
+<!-- <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> -->
+<!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+<style>
+    .node {
+        cursor: pointer
+    }
+
+    .node circle {
+        stroke: rgba(145, 187, 247, 0.62);
+        stroke-width: 1.5px;
+    }
+
+    .link:hover {
+        stroke: yellow !important;
+        cursor: pointer
+    }
+
+    .axis {
+        opacity: 0.75;
+        font: 10px sans-serif;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    .axis .domain {
+        fill: none;
+        stroke: #000;
+        stroke-opacity: .5;
+        stroke-width: 4px;
+        stroke-linecap: round;
+    }
+
+    .axis .halo {
+        fill: none;
+        stroke: #ddd;
+        stroke-width: 3px;
+        stroke-linecap: round;
+    }
+
+    .slider {
+        position: absolute;
+    }
+
+    .slider .handle {
+        fill: #fff;
+        stroke: #000;
+        stroke-opacity: .5;
+        stroke-width: 1.25px;
+        cursor: grab;
+    }
+
+    img {
+        width: 400px;
+        height: 40px;
+        display: inline;
+        margin: 15px;
+    }
+
+    div.tooltip {
+        text-align: left;
+        position: absolute;
+        width: 300px;
+        height: fit-content;
+        padding: 6px;
+        font: 15px sans-serif;
+        background: yellow;
+        border: 0px;
+        border-radius: 5px;
+        pointer-events: none;
+    }
+
+    .fixedDiv {
+        /* top: 50px;
+        left: 50px; */
+        font-size: 14px;
+        /* pointer-events: none; */
+        max-width: 400px;
+        max-height: 500px;
+        position: fixed;
+        padding: 4px;
+        border: 1px solid rgba(128, 128, 128, 0.5);
+        border-radius: 4px;
+        background-color: rgba(255, 255, 224, 0.5);
+        overflow-y: scroll
+    }
+    .excerptURL {
+        font-size: 12px;
+        pointer-events: all !important;
+    }
+    #search {
+        width: 75px
+    }
+</style>
+
+
+<body>
+    <div class="container">
+        <div class="row" style="text-align: center">
+            <h2>Word co-occurrence network of the archive</h2>
+            <!-- <h3>(Russian only -- full diagram in development)</h3> -->
+            <p>Showing how often words occur together among the poems.
+                Words are linked if they occur in the same 2 line window.
+                Link thickness/width is based on the number of times that word pair
+                is found together.
+                <!-- This network includes all words that occur 5 or more times in the archive. -->
+                <!-- Poems are scaled by number of poems with the word and colored by the percent 
+                Ukrainian-language vs. percent Russian-language poems. -->
+            </p>
+            <!-- <input class='anytoggle' id='lang' type="checkbox" checked data-toggle="toggle" data-on="Ukrainian text"
+                data-off="Russian text"> -->          
+            <!-- <span style="color: rgb(165, 0, 38)">100% Poems with Theme in Russian</span><img src="RdYlBu.png" alt="Blue to red color scale"><span style="color: rgb(49, 54, 149)">100% Poems with Theme in Ukrainian</span> -->
+        </div>
+        <div class="row">
+            <b>Font size:</b> <span id="currentFS"></span> <button id="dfs" class="fontsize">-Aa</button><button
+                id="ifs" class="fontsize">+Aa</button>
+            <span style="float: right"><span id="query">Search for subgraph:</span> <input id='input' type="text" name="textInput" value=""></input> <button
+                id='search' type="button" class="btn btn-primary">Search</button></span>
+        </div>
+    </div>
+</body>
+
+<script src="network.js"></script>

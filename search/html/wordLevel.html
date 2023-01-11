@@ -1,0 +1,71 @@
+<div class="row">
+    <table id="word_table">
+        <tr>
+            <th></th>
+            <th>Source</th>
+            <th>Translation</th>
+        </tr>
+        <tr>
+            <th>Word</th>
+            <td id='table_src_align'>-</td>
+            <td id='table_tgt_align'>-</td>
+        </tr>
+        <tr>
+            <th>Lemma</th>
+            <td id='table_src_lemma'>-</td>
+            <td id='table_tgt_lemma'>-</td>
+        </tr>
+    </table>
+    <div class="titleTooltip">
+        <h6 class="paddingtop">Alignment Explorer</h6>
+        <span class="tooltiptext">This visualization requires a word to be selected (clicked) in the texts. Once a word
+            is selected, the alignment explorer displays three related concepts from left to right: 1) the number of
+            times that the selected word is not translated as the immediate translation (the aligned translation), 2)
+            the number of times that the selected word is translated as the immediate translation, and 3) the number of
+            times that the immediate translation is not translated as the selected word. <br>Hovering over segments of the
+            visualization will provide specific information on the frequencies of these phenomena.</span>
+    </div>
+    <div id="alignmentBar" style="height: 5vh"></div>
+    <div id="alignmentTitle"></div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div id="textArea">
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <button id="nextAlign" onclick="myAlignmentBar.showNextExample()" ;>
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="titleTooltip paddingtop">
+        <h6>Position(s) in Text</h6>
+        <span class="tooltiptext">When you click on a word, this panel displays all the instances in which the word and
+            its corresponding translation are used in the text as a whole. Dots more to the right represent instances of
+            the word later in the text. The dots in blue correspond to the selected word in the source text, while the
+            dots in red correspond to the selected word in the translation text. <br>This panel provides to the user data
+            about word frequency and spread. Furthermore, this panel (in conjunction with the “Alignment Explorer”)
+            helps users determine how often a selected word and its immediate translation appear together in the text.
+        </span>
+    </div>
+    <div id="timeline"></div>
+</div>
+<div class="row">
+    <div class="titleTooltip paddingtop">
+        <h6>Google N-Gram Viewer (Usage over time)</h6>
+        <span class="tooltiptext">Mining a select corpus of texts, the Google Ngram Viewer displays the frequency with
+            which a given word has been used from 1800 to the present. When you click on a word, WADL feeds the selected
+            word and its corresponding immediate translation into Ngram, and displays a chart showing the frequencies of
+            the words. The blue line is the frequency of the source document word, while the red line is the frequency
+            of the translation document word. You can hover over the graph to judge the divergence between the frequency
+            of the words at a given time. You can also select a line or label to gray out the other line. Our intention
+            in providing this data is to assist translators and literary scholars in determining whether the selected
+            word and its translation closely correspond.
+        </span>
+    </div>
+    <div id="ngraminfo"></div>
+    <div id='ngramviewer'></div>
+</div>
+</div>
