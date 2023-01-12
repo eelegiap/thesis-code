@@ -1,5 +1,7 @@
+let parseDate = d3.timeFormat("%b %d, %Y");
+
 let promises = [
-    d3.json("data/poems_2023-01-06.json")
+    d3.json("data/poems_2023-01-11_3.json")
 ];
 
 Promise.all(promises)
@@ -9,13 +11,25 @@ Promise.all(promises)
 
 
 // initMainPage
-function initMainPage(allDataArray) {
-    let poemData = allDataArray[0];
+function initMainPage(data) {
+    let poemData = data[0];
     myText = new TextPanel(poemData);
+    mySearchResults = new SearchResults(poemData,'вина')
     // change_level("wordlevel")
 }
 
 function updateResults(){
     var input = d3.select('#form1').property('value')
-    myText.wrangleData(input);
+    console.log(input)
+    mySearchResults.wrangleData(input);
+}
+
+d3.select('#search').on('click', function() {
+    updateResults()
+})
+
+
+function choose(choices) {
+    var index = Math.floor(Math.random() * choices.length);
+    return choices[index];
 }

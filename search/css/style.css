@@ -1,25 +1,54 @@
-body{
+body {
     padding-left: 3vh;
     padding-top: 3vh;
+    padding-bottom: 20px;
 }
+
 #searchCol {
     padding-left: 6vh
 }
+
 form {
     width: 25%
 }
+
 #results {
-    /* padding-right: 10vh; */
-    width: 75%
+    padding-right: 10vh;
+}
+
+#resultsContainer {
+    max-height: 30%;
+    overflow-y: auto
+}
+.result {
+    padding-left: 4vh;
+}
+.poemResult {
+    cursor: pointer;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+#poemContainer {
+    max-height: 30%;
+    overflow-y: auto;
+}
+#poemMeta {
+    padding-top: 10vh;
+    padding-left: 15vh;
+    padding-bottom: 5vh
 }
 #poemTxt {
-    padding-left: 10vh;
-    padding-bottom: 10vh
+    padding-left: 15vh;
+    padding-bottom: 10vh;
 }
+
 .input-group {
     max-width: 75%;
     padding-bottom: 5vh
 }
+
 /* Tooltip text */
 .titleTooltip .tooltiptext {
     visibility: hidden;
@@ -37,21 +66,27 @@ form {
 
     z-index: 1;
 }
+
 .titleTooltip:hover .tooltiptext {
     visibility: visible;
 }
+
 .token mark {
     display: contents;
 }
-input, .dropdown-toggle {
+
+input,
+.dropdown-toggle {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-  }
+}
 
-  .searchBar {
+.searchBar {
     min-height: 50px
-  }
-  #search {
+}
+
+#search {
     background-color: lightsteelblue;
-  }
+}
+
