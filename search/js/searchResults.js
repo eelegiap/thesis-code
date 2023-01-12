@@ -50,7 +50,7 @@ class SearchResults {
 
         dataByInput = dataByInput.sort((a,b) => a.Author.split(' ')[1] > b.Author.split(' ')[1])
 
-        vis.updateVis(dataByInput.slice(0, 20));
+        vis.updateVis(dataByInput);
 
     }
 
@@ -62,7 +62,9 @@ class SearchResults {
 
         let vis = this;
         d3.selectAll("#results *").remove();
-
+        d3.select('#resultCt').html('')
+        d3.select('#resultCt').html(`${data.length} results. 
+                ${data.filter(d => d['Before or after'] == 'Before').length} from before invasion, ${data.filter(d => d['Before or after'] == 'After').length} from after invasion.`)
         
         var resultsByPoem = d3.select('#results').selectAll('.poemResult')
             .data(data)

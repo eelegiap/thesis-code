@@ -1,11 +1,11 @@
 body {
     padding-left: 3vh;
     padding-top: 3vh;
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
 }
 
 #searchCol {
-    padding-left: 6vh
+    padding-left: 6vh;
 }
 
 form {
@@ -13,12 +13,15 @@ form {
 }
 
 #results {
+    padding-top: 3vh;
     padding-right: 10vh;
 }
-
+#resultCt {
+    font-size: 12px;
+}
 #resultsContainer {
-    max-height: 30%;
-    overflow-y: auto
+    max-height: 500px;
+    overflow: scroll
 }
 .result {
     padding-left: 4vh;
@@ -31,11 +34,11 @@ form {
 }
 
 #poemContainer {
-    max-height: 30%;
+    max-height:  600px;
     overflow-y: auto;
 }
 #poemMeta {
-    padding-top: 10vh;
+    padding-top: 6vh;
     padding-left: 15vh;
     padding-bottom: 5vh
 }
@@ -46,7 +49,7 @@ form {
 
 .input-group {
     max-width: 75%;
-    padding-bottom: 5vh
+    padding-bottom: 1vh
 }
 
 /* Tooltip text */
