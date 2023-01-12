@@ -9,21 +9,22 @@ class TextPanel {
         let vis = this;
 
         var d = choose(this.data)
-        d3.select('#poemTxt').html(d.Text.replaceAll('\n', '<br>'))
+        this.updateVis(d)
+        // d3.select('#poemTxt').html(d.Text.replaceAll('\n', '<br>'))
 
-        d3.select('#poemMeta').html(function() {
-            var color = 'black'
-            if (d['Before or after'] == 'Before') {
-                color = 'blue'
-            } else {
-                color = 'red'
-            }
+        // d3.select('#poemMeta').html(function() {
+        //     var color = 'black'
+        //     if (d['Before or after'] == 'Before') {
+        //         color = 'blue'
+        //     } else {
+        //         color = 'red'
+        //     }
             
-            var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date (d['Date posted']))})` : ''
+        //     var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date (d['Date posted']))})` : ''
 
-            return `<span style='color:${color}'>${d['Before or after']}${date}:</span>
-                    <b>${d.Author}</b>, <i>${d.Source}</i>`
-        })
+        //     return `<span style='color:${color}'>${d['Before or after']}${date}:</span>
+        //             <b>${d.Author}</b>, <i>${d.Source}</i>`
+        // })
 
     }
     wrangleData(id) {

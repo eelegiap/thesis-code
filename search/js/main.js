@@ -9,12 +9,12 @@ Promise.all(promises)
     .catch( function (err){console.log(err)} );
 
 
-
+let input = 'язык'
 // initMainPage
 function initMainPage(data) {
     let poemData = data[0];
+    mySearchResults = new SearchResults(poemData,input)
     myText = new TextPanel(poemData);
-    mySearchResults = new SearchResults(poemData,'вина')
     // change_level("wordlevel")
 }
 

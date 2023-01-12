@@ -61,9 +61,11 @@ class SearchResults {
     updateVis(data) {
 
         let vis = this;
+        var input = d3.select('#form1').property('value')
+
         d3.selectAll("#results *").remove();
         d3.select('#resultCt').html('')
-        d3.select('#resultCt').html(`${data.length} results. 
+        d3.select('#resultCt').html(`${data.length} poems containing ${input}. 
                 ${data.filter(d => d['Before or after'] == 'Before').length} from before invasion, ${data.filter(d => d['Before or after'] == 'After').length} from after invasion.`)
         
         var resultsByPoem = d3.select('#results').selectAll('.poemResult')
