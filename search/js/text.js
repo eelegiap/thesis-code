@@ -10,21 +10,6 @@ class TextPanel {
 
         var d = choose(this.data)
         this.updateVis(d)
-        // d3.select('#poemTxt').html(d.Text.replaceAll('\n', '<br>'))
-
-        // d3.select('#poemMeta').html(function() {
-        //     var color = 'black'
-        //     if (d['Before or after'] == 'Before') {
-        //         color = 'blue'
-        //     } else {
-        //         color = 'red'
-        //     }
-            
-        //     var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date (d['Date posted']))})` : ''
-
-        //     return `<span style='color:${color}'>${d['Before or after']}${date}:</span>
-        //             <b>${d.Author}</b>, <i>${d.Source}</i>`
-        // })
 
     }
     wrangleData(id) {
@@ -32,7 +17,7 @@ class TextPanel {
         var thisPoem = this.data.find(d => d.UniqueIndex == id)
 
         this.updateVis(thisPoem)
-        
+
     }
 
     /*
@@ -44,15 +29,15 @@ class TextPanel {
 
         d3.select('#poemMeta').html('')
 
-        d3.select('#poemMeta').html(function() {
+        d3.select('#poemMeta').html(function () {
             var color = 'black'
             if (thisPoem['Before or after'] == 'Before') {
                 color = 'blue'
             } else {
                 color = 'red'
             }
-            
-            var date = thisPoem['Date posted'] != 'None' ? ` (${parseDate(new Date (thisPoem['Date posted']))})` : ''
+
+            var date = thisPoem['Date posted'] != 'None' ? ` (${parseDate(new Date(thisPoem['Date posted']))})` : ''
 
             return `<span style='color:${color}'>${thisPoem['Before or after']}${date}:</span>
                     <b>${thisPoem.Author}</b>, <i>${thisPoem.Source}</i>`
@@ -62,16 +47,36 @@ class TextPanel {
 
         var forHTML = thisPoem.Text.replaceAll('\n', '<br>')
 
+
         var lineHTMLs = []
-        thisPoem.nlpInfo.forEach(function(line, i) {
+        thisPoem.nlpInfo.forEach(function (line, i) {
             var lineHTML = line.lineTxt
-            line.lemmas.forEach(function(lem, j) {
+            line.lemmas.forEach(function (lem, j) {
                 if (lem == input) {
                     var span = thisPoem.nlpInfo[i].spans[j]
                     var token = thisPoem.nlpInfo[i].texts[j]
                     lineHTML = [lineHTML.slice(0, span.start), `<mark>${token}</mark>`, lineHTML.slice(span.end)].join('');
                 }
             })
+            if (thisPoem.Source.includes('ROAR')) {
+                if (!(/^[\*]+$/.test(lineHTML.replaceAll(' ', '')))) {
+                    // check if bold
+                    var regexBold = /\*\*([^*]+)\*\*/i
+                    var matchesBold = lineHTML.match(regexBold)
+                    if (matchesBold != null && matchesBold.length > 0) {
+                        lineHTML = `<b>${matchesBold.pop()}</b>`
+                        console.log(lineHTML)
+                    } else {
+                        // check if italic
+                        var regexItalic = /\*([^*]+)\*/i;
+                        var matchesItalic = lineHTML.match(regexItalic)
+                        if (matchesItalic != null && matchesItalic.length > 0) {
+                            lineHTML = `<i>${matchesItalic.pop()}</i>`
+                            console.log(lineHTML)
+                        }
+                    }
+                }
+            }
             lineHTMLs.push(lineHTML)
         })
         forHTML = lineHTMLs.join('<br>')

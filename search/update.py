@@ -32,6 +32,7 @@ def nlpIt(text):
     return nlpList
 
 df = pd.read_excel('../Excel_files/Full_Poem_Dataset_12-17.xlsx')
+df = df.drop(columns=['Unnamed: 0'])
 
 print(df.head())
 

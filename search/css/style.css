@@ -13,11 +13,11 @@ form {
 }
 
 #results {
-    padding-top: 3vh;
     padding-right: 10vh;
 }
 #resultCt {
     font-size: 12px;
+    padding-bottom: 3vh;
 }
 #resultsContainer {
     max-height: 500px;
@@ -93,3 +93,9 @@ input,
     background-color: lightsteelblue;
 }
 
+
+#random {
+    margin-top: 3vh;
+    width: 25%;
+    float: left
+}
