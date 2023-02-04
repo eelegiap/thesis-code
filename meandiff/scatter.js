@@ -23,7 +23,7 @@ function draw(dataType) {
     //Read the data
     var path2data;
     if (dataType == 'lemmas') {
-        path2data = 'mddata/lemmas_shakenLogData1-9.json'
+        path2data = 'frequencyData2-3_1.json'
         d3.selectAll('.keywords').style('display','none')
     } else {
         path2data = 'mddata/shakenSynsetMeanDiff1-9.json'
@@ -34,28 +34,25 @@ function draw(dataType) {
         if (dataType == 'synsets') {
             data.map(d => d.translatedLabel = d.label)
         }
+        data.map(function(d) {
+            d.s_x = (d.info.Before+d.info.After) /2
+            d.s_y = d.info.After - d.info.Before
+        })
         // var lowerThresh = -4.092195306328719
         // var upperThresh = -3.190916638805563
         var SD = 1.8
         var threshold = '5%'
 
-        // length of lemma
-        // data = data.filter(d => d.lemma.length > 1)
-        // number of examples total
-        data = data.filter(d => ((d.before + d.after) >= 10))
-        // get rid of outliers
-        // data = data.filter(d => d.s_y > SD || d.s_y < -1*SD)
-
         // Add X axis
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
         var minY = d3.min(data.map(d => d.s_y)); var maxY = d3.max(data.map(d => d.s_y))
         var x = d3.scaleLinear()
-            .domain([0, maxX + 1])
+            .domain([minX - .1, maxX + .1])
             .range([0, width]);
 
         // Add Y axis
         var y = d3.scaleLinear()
-            .domain([minY - 1, maxY + 1])
+            .domain([minY - .1, maxY + .1])
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y));
@@ -243,7 +240,7 @@ console.log(lessfreq)
 
 $(document).ready(function () {
 
-    var dataOptions = ['Synonym Sets','Individual Lemmas']
+    var dataOptions = ['Individual Lemmas','Synonym Sets',]
 
     d3.select("#selectData")
         .selectAll('myOptions')
@@ -262,5 +259,5 @@ $(document).ready(function () {
         }
     })
 
-    draw('synsets')
+    draw('lemmas')
 });
