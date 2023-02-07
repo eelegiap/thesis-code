@@ -6,8 +6,8 @@ function draw(dataType) {
 
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 30, bottom: 30, left: 50 },
-        width = 1450 - margin.left - margin.right,
-        height = 1000 - margin.top - margin.bottom;
+        width = 1200 - margin.left - margin.right,
+        height = 750 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     var svg = d3.select("#scatterplot")
@@ -18,30 +18,34 @@ function draw(dataType) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    const utcParse = d3.utcParse("%m-%d-%Y");
+    // const utcParse = d3.utcParse("%m-%d-%Y");
 
     //Read the data
     var path2data;
     if (dataType == 'lemmas') {
         path2data = 'frequencyData2-3_1.json'
-        d3.selectAll('.keywords').style('display','none')
+        d3.selectAll('.keywords').style('display', 'none')
     } else {
         path2data = 'mddata/shakenSynsetMeanDiff1-9.json'
-        d3.selectAll('.keywords').style('display','block')
+        d3.selectAll('.keywords').style('display', 'block')
     }
 
     d3.json(path2data, function (data) {
         if (dataType == 'synsets') {
-            data.map(d => d.translatedLabel = d.label)
+            data.map(d => d.keyword = d.label)
         }
-        data.map(function(d) {
-            d.s_x = (d.info.Before+d.info.After) /2
-            d.s_y = d.info.After - d.info.Before
+        // numerical filters
+        data = data.filter(d => !(d.info.Before * d.info.After == 0))
+        data = data.filter(d => d.info.stats.pvalue < .05)
+        // keyword filters
+        data = data.filter(d => /[а-яА-ЯЁё]/.test(d.keyword) && !d.keyword.includes('_'))
+        var irrelevantWords = ['авторский', 'блог', 'личный', 'источник','автор']
+        data = data.filter(d => !irrelevantWords.includes(d.keyword))
+        data.map(function (d) {
+            d.s_x = (Math.log(d.info.Before) + Math.log(d.info.After)) / 2
+            d.s_y = Math.log(d.info.After) - Math.log(d.info.Before)
         })
-        // var lowerThresh = -4.092195306328719
-        // var upperThresh = -3.190916638805563
-        var SD = 1.8
-        var threshold = '5%'
+        console.log('length of data:',data.length)
 
         // Add X axis
         var minX = d3.min(data.map(d => d.s_x)); var maxX = d3.max(data.map(d => d.s_x))
@@ -102,81 +106,26 @@ function draw(dataType) {
         // find more and less significant words
         var morefreq = []
         var lessfreq = []
-        var inmiddle = []
-
         var radius = 3
-
         groups.append("circle")
             .attr("cx", function (d) { return x(d.s_x) })
             .attr("cy", function (d) { return y(d.s_y) })
             .attr("r", radius)
             .style('opacity', .5)
             .style("fill", function (d) {
-                if (d.s_y > SD) {
-                    morefreq.push(d)
-                    return '#90EE90'
-                } else if (d.s_y < -SD) {
-                    lessfreq.push(d)
-                    return 'tomato'
-                } else {
-                    inmiddle.push(d)
-                    return 'black'
+                if (d.info.stats.pvalue < .05) {
+                    if (Math.sign(d.info.After - d.info.Before) == 1) {
+                        morefreq.push(d)
+                        return '#90EE90'
+                    } else {
+                        lessfreq.push(d)
+                        return 'tomato'
+                    }
                 }
             })
 
-        morefreq = morefreq.sort(function (a, b) { return a.after < b.after })
-        morefreq.unshift('N/A')
-        var morerows = d3.select('#morefreq').selectAll("tr")
-            .data(morefreq)
-            .enter()
-            .append("tr")
-            .attr('class', 'tableRemove')
-        morerows
-            .append("td")
-            .attr('class', 'table')
-            .text(d => d.translatedLabel)
-        morerows
-            .append("td")
-            .text(d => d.before)
-            .style('color', 'tomato')
-        morerows
-            .append("td")
-            .text(d => d.after)
-            .style('color', 'green')
-        if (dataType == 'synsets') {
-            morerows
-                .append("td")
-                .text(function (d) { return Object.keys(d.synsetTokens).join(', ') })
-        }
-
-        lessfreq = lessfreq.sort(function (a, b) { return a.before < b.before })
-        lessfreq.unshift('N/A')
-console.log(lessfreq)
-        var lessrows = d3.select('#lessfreq').selectAll("tr")
-            .data(lessfreq)
-            .enter()
-            .append("tr")
-            .attr('class', 'tableRemove')
-        lessrows
-            .append("td")
-            .text(d => d.translatedLabel)
-        lessrows
-            .append("td")
-            .text(d => d.before)
-            .style('color', 'green')
-        lessrows
-            .append("td")
-            .text(d => d.after)
-            .style('color', 'tomato')
-
-        if (dataType == 'synsets') {
-            lessrows
-                .append("td")
-                .text(function (d) {return  Object.keys(d.synsetTokens).join(', ') })
-        }
-
         var labelFS = 13
-        groups.append("text").text(d => d.translatedLabel)
+        groups.append("text").text(d => d.keyword)
             .attr('class', 'dotLabel')
             .attr("x", function (d) {
                 return x(d.s_x)
@@ -187,6 +136,13 @@ console.log(lessfreq)
             .attr('dx', '.5em')
             .style('opacity', .5)
             .style('font-size', `${labelFS}px`)
+
+        //  percentage formatting
+        const pct = d3.format(".2%")
+        morefreq = morefreq.sort(function (a, b) { return (b.keyword < a.keyword) })
+        lessfreq = lessfreq.sort(function (a, b) { return (b.keyword < a.keyword) })
+        // morefreq = morefreq.sort(function (a, b) { return (a.info.After/a.info.Beforе) < (b.info.After/b.info.Before) })
+        // lessfreq = lessfreq.sort(function (a, b) { return a.info.Before - a.info.After < b.info.Before - b.info.After })
 
         groups.on("mouseover", function (d) {
             d3.select(this).select('circle').transition().attr('r', 7)
@@ -201,46 +157,52 @@ console.log(lessfreq)
                 d3.selectAll('.dotLabel').transition().style('opacity', .5)
             })
 
-        // SD line
-        svg.append('line')
-            .style("stroke", "red")  // colour the line
-            .style('stroke-width', 1.5)
-            .attr('class', 'dashed')
-            .attr("x1", 0)     // x position of the first end of the line
-            .attr("y1", y(SD))      // y position of the first end of the line
-            .attr("x2", width)     // x position of the second end of the line
-            .attr("y2", y(SD))
+        tabulate('morefreq', morefreq, ['keyword', 'Before', 'After', 'BeforeCt', 'AfterCt'])
+        tabulate('lessfreq', lessfreq, ['keyword', 'Before', 'After', 'BeforeCt', 'AfterCt'])
 
-        svg.append('line')
-            .style("stroke", "red")
-            .style('stroke-width', 1.5)
-            .attr('class', 'dashed')
-            .attr("x1", 0)
-            .attr("y1", y(-SD))
-            .attr("x2", width)
-            .attr("y2", y(-SD));
+        function tabulate(id, data, columns) {
+            var table = d3.select(`#${id}`).append('table')
+            var thead = table.append('thead')
+            var tbody = table.append('tbody');
 
-        // SD labels
-        svg.append('text')
-            .attr('x', width - 10)
-            .attr('y', y(SD) - 10)
-            .style('fill', 'red')
-            .attr('text-anchor', 'end')
-            .text(`upper ${threshold} threshold (based on randomized data)`)
+            // append the header row
+            thead.append('tr')
+                .selectAll('th')
+                .data(columns).enter()
+                .append('th')
+                .text(function (column) { return column; });
 
-        svg.append('text')
-            .attr('x', width - 10)
-            .attr('y', y(-SD) + 20)
-            .style('fill', 'red')
-            .attr('text-anchor', 'end')
-            .text(`lower ${threshold} threshold (based on randomized data)`)
+            // create a row for each object in the data
+            var rows = tbody.selectAll('tr')
+                .data(data)
+                .enter()
+                .append('tr');
 
+            // create a cell in each row for each column
+            var cells = rows.selectAll('td')
+                .data(function (row) {
+                    return columns.map(function (column) {
+                        if (column == 'keyword') {
+                            return { column: column, value: row[column] };
+                        } else if (['Before', 'After'].includes(column)) {
+                            return { column: column, value: pct(row.info[column]) };
+                        } else {
+                            return { column: column, value: row.info[column] };
+                        }
+                    });
+                })
+                .enter()
+                .append('td')
+                .text(function (d) { return d.value; });
+
+            return table;
+        }
     })
 }
 
 $(document).ready(function () {
 
-    var dataOptions = ['Individual Lemmas','Synonym Sets',]
+    var dataOptions = ['Individual Lemmas', 'Synonym Sets',]
 
     d3.select("#selectData")
         .selectAll('myOptions')

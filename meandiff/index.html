@@ -66,9 +66,7 @@
         th, td {
             padding: 5px
         }
-        /* .keywords {
-            min-width: 400px;
-        } */
+
     </style>
 </head>
 
@@ -111,44 +109,20 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 padding">
-                <h3>Russian words that occur <span style="color: lightgreen">more frequently</span> after than before.</h3>
-                <table style="width:50%" id="morefreq">
-                    <tr>
-                      <th>Word</th>
-                      <th>Count of poems containing the word before</th>
-                      <th>Count of poems containing the word after</th>
-                      <th class="keywords">Keywords</th>
-                    </tr>
-                  </table>
+            <div class="col-md-6">
+                <h4>Russian words that occur <span style="color: lightgreen">more frequently</span> after than before.</h4>
+                <div id="morefreq"></div>
+            </div>
+            <div class="col-md-6">
+                <h4> Russian words that occur <span style="color: tomato">less frequently</span> after than before.</h4>
+                <div id="lessfreq"></div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 padding">
-                <h3> Russian words that occur <span style="color: tomato">less frequently</span> after than before.</h3>
-                    <table style="width:50%" id="lessfreq">
-                        <tr>
-                          <th>Word</th>
-                          <th>Count of poems containing the word before</th>
-                          <th>Count of poems containing the word after</th>
-                          <th class="keywords">Keywords</th>
-                        </tr>
-                      </table>
-            </div>
+
         </div>
         <div class="row">
             <div class="col-md-12 padding">
-                <!-- <p class="note">Note: Data in the graph represents equal sample sizes of Russian and Ukrainian words.
-                    Sample
-                    size of Russian poems is 5000 words
-                    from each year, and sample size of Ukrainian poems is 10,000 words from each year. Also, the word
-                    counts
-                    are based on
-                    the lemmatized form of a word, so that different forms of a word collapse into its dictionary form.
-                    Words are counted
-                    based on the raw poem text, so if some word appears multiple times in a poem, it is counted multiple
-                    times.
-                </p> -->
             </div>
         </div>
         <br><br><br>
