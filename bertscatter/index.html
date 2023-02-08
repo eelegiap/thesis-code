@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>BERT Context Embeddings</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Load d3.js -->
-    <script src="https://d3js.org/d3.v6.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-  </head>
-  <body>
-    <h2>For Each Word: BERT Context Embeddings Plotted in 2D</h2>
-    <p><span id="keyword"></span></p>
-    <p>
-        <button id="prevbutton">PREV</button>
-        <button id="nextbutton">NEXT</button>
-    </p>
-    <div id="chart"></div>
-	<script src="bertscatter.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>BERT Context Embeddings</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Load d3.js -->
+  <script src="https://d3js.org/d3.v6.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <h2>For Each Word: BERT Context Embeddings Plotted in 2D</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p><span style="color: limegreen">Before</span> and <span style="color: blueviolet">After</span></p>
+        <p><span id="keyword"></span>
+          <div id='dropdown'></div><button id="prevbutton">PREV</button>
+        <button id="nextbutton">NEXT</button></p>
+        <div id="chart"></div>
+      </div>
+    </div>
+  </div>
+  <script src="bertscatter.js"></script>
+</body>
+
 </html>

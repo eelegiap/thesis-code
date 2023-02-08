@@ -56,12 +56,13 @@ function draw_chart(data, i, recData) {
         .style('fill', function (d) {
             var rec = recData.find(obj => {
                 return obj['UniqueIndex'] === d.d.recID
-              })
+            })
             var period = rec['Before or after']
             if (period == 'Before') {
-                return 'blueviolet'
-            } return 'limegreen'
+                return 'limegreen'
+            } return 'blueviolet'
         })
+        .style('opacity',.5)
     // .style("fill", "lightgray")
 
     dots.on('mouseover', function (d) {
@@ -79,10 +80,8 @@ function draw_chart(data, i, recData) {
     });
     // })
 }
-
-
-$(document).ready(function () {
-    d3.json('perplexity50/keywordData2-2_batch_p_6.json').then(function (data) {
+function draw_batch(i) {
+    d3.json(`embedData/PCAtoTSNEdataP50/keywordData2-2_batch_p_${i}.json`).then(function (data) {
         d3.json('Full_Poem_Dataset_2-3.json').then(function (recData) {
             // var i = Object.keys(data).indexOf('рука')
             var i = 0
@@ -97,4 +96,28 @@ $(document).ready(function () {
             })
         })
     })
+}
+
+$(document).ready(function () {
+    console.log('ready to go')
+    var batches = [0,1,2,3,4,5,6,7,8,9,10,11,12]
+
+    var dropdown = d3.select("#dropdown")
+        .append('select')
+    // add the options to the button
+    dropdown // Add a button
+        .selectAll('options')
+        .data(batches)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d }) // corresponding value returned by the button
+    dropdown.property('value', 0);
+    d3.select('#dropdown select').on('change', function () {
+        var i = d3.select(this).property("value")
+        draw_batch(i)
+    })
+
+    draw_batch(0)
+
 })
