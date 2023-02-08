@@ -108,6 +108,7 @@ function drawChart(result, iod, pos) {
         })
         .attr('id', function (d, i) { "circle" + (i + 1) })
         .style("fill", function (d, i) {
+            console.log(result[i]['countryInfo'])
             // if (i == 0) { return "tomato" };
             return "#4292c6";
         });
@@ -185,10 +186,7 @@ function drawChart(result, iod, pos) {
 
 
 $(document).ready(function () {
-    console.log('doc ready.')
-    d3.json("sigMeanDiffVecsTranslated0.json").then(function (result) {
-        console.log('json loaded.')
-
+    d3.json("sigMeanDiffVecsTranslated1.json").then(function (result) {
         var ioddropdown = d3.select("#ioddropdown")
         .attr('class','dropdown')
             .append('select')
@@ -231,7 +229,6 @@ $(document).ready(function () {
         d3.selectAll('.dropdown').on('change', function () {
             var pos = d3.select('#dropdown select').property("value")
             var iod = d3.select('#ioddropdown select').property("value")
-            console.log(iod, pos)
             drawChart(result, iod, pos)
 
         })
