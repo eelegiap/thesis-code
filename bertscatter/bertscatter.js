@@ -6,7 +6,7 @@ function draw_chart(data, i, recData) {
         .style("opacity", 0);
 
 
-    var keywords = Object.keys(data).sort()
+    var keywords = Object.keys(data).sort(function(a,b) { return data[a].length < data[b].length})
     var keyword = keywords[i]
     d3.select('#keyword').attr('class', 'keyword' + i).text(keyword)
 
@@ -77,11 +77,42 @@ function draw_chart(data, i, recData) {
         tooltip.transition()
             .duration(500)
             .style("opacity", 0);
-    });
+    }).on('click', function(d) {
+        var copyText = `${d.target.__data__.d.text}`
+        copyToClipboard(copyText)
+        console.log(copyText)
+    })
     // })
+
+    function copyToClipboard(textToCopy) {
+        // navigator clipboard api needs a secure context (https)
+        if (navigator.clipboard && window.isSecureContext) {
+            // navigator clipboard api method'
+            return navigator.clipboard.writeText(textToCopy);
+        } else {
+            // text area method
+            let textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            // make the textarea out of viewport
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            return new Promise((res, rej) => {
+                // here the magic happens
+                document.execCommand('copy') ? res() : rej();
+                textArea.remove();
+            });
+        }
+    }
+    
 }
 function draw_batch(i) {
-    d3.json(`embedData/wedsData/keywordData2-8_PCA2TSNE_avg-False_TSNEonly-False_${i}.json`).then(function (data) {
+    
+    // keywordData2-9_PCA2TSNE_avg-False_TSNEonly-False_${i}.json
+    d3.json(`embedData/onlyTSNEperplexity5/keywordData2-9_TSNE_avg-False_TSNEonly-True_${i}.json`).then(function (data) {
         d3.json('Full_Poem_Dataset_2-3.json').then(function (recData) {
             // var i = Object.keys(data).indexOf('рука')
             var i = 0
@@ -106,8 +137,8 @@ function draw_batch(i) {
 
 $(document).ready(function () {
     console.log('ready to go')
-    // var batches = [0,1,2,3,4,5,6,7,8,9,10,11,12]
-    var batches = [0,1,2]
+    var batches = [0,1,2,3,4,5,6,7,8,9,10,11,12]
+    // var batches = [0,1,2]
     
     var dropdown = d3.select("#dropdown")
         .append('select')

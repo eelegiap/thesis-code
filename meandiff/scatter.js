@@ -44,6 +44,8 @@ function draw(dataType) {
         data.map(function (d) {
             d.s_x = (Math.log(d.info.Before) + Math.log(d.info.After)) / 2
             d.s_y = Math.log(d.info.After) - Math.log(d.info.Before)
+
+            d.info.timesDifference = Math.round(d.info.After/d.info.Before * 100) / 100 
         })
         console.log('length of data:',data.length)
 
@@ -139,8 +141,10 @@ function draw(dataType) {
 
         //  percentage formatting
         const pct = d3.format(".2%")
-        morefreq = morefreq.sort(function (a, b) { return (b.keyword < a.keyword) })
-        lessfreq = lessfreq.sort(function (a, b) { return (b.keyword < a.keyword) })
+        // morefreq = morefreq.sort(function (a, b) { return a.info.stats.pvalue > b.info.stats.pvalue })
+        // lessfreq = lessfreq.sort(function (a, b) { return a.info.stats.pvalue > b.info.stats.pvalue })
+        morefreq = morefreq.sort(function (a, b) { return (b.info.timesDifference > a.info.timesDifference) })
+        lessfreq = lessfreq.sort(function (a, b) { return (b.info.timesDifference < a.info.timesDifference) })
         // morefreq = morefreq.sort(function (a, b) { return (a.info.After/a.info.Beforе) < (b.info.After/b.info.Before) })
         // lessfreq = lessfreq.sort(function (a, b) { return a.info.Before - a.info.After < b.info.Before - b.info.After })
 
@@ -157,8 +161,8 @@ function draw(dataType) {
                 d3.selectAll('.dotLabel').transition().style('opacity', .5)
             })
 
-        tabulate('morefreq', morefreq, ['keyword', 'Before', 'After', 'BeforeCt', 'AfterCt'])
-        tabulate('lessfreq', lessfreq, ['keyword', 'Before', 'After', 'BeforeCt', 'AfterCt'])
+        tabulate('morefreq', morefreq, ['keyword', 'Before', 'After', 'timesDifference'])
+        tabulate('lessfreq', lessfreq, ['keyword', 'Before', 'After', 'timesDifference'])
 
         function tabulate(id, data, columns) {
             var table = d3.select(`#${id}`).append('table')
