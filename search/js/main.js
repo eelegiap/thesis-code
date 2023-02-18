@@ -1,7 +1,8 @@
 let parseDate = d3.timeFormat("%b %d, %Y");
 
 let promises = [
-    d3.json("data/poems_2023-01-11_3.json")
+    d3.json("data/poems_2023-01-11_3.json"),
+    d3.json("data/Thesis_Authors16.json")
 ];
 
 Promise.all(promises)
@@ -9,12 +10,13 @@ Promise.all(promises)
     .catch( function (err){console.log(err)} );
 
 
-let input = 'язык'
+let input = 'рыдать'
 // initMainPage
 function initMainPage(data) {
     let poemData = data[0];
-    mySearchResults = new SearchResults(poemData,input)
-    myText = new TextPanel(poemData);
+    let authorData = data[1];
+    mySearchResults = new SearchResults(poemData,input,authorData)
+    myText = new TextPanel(poemData,authorData);
     // change_level("wordlevel")
 }
 

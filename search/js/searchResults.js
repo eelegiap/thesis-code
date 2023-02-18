@@ -1,8 +1,9 @@
 class SearchResults {
 
-    constructor(poemData, input) {
+    constructor(poemData, input, authorData) {
         this.data = poemData
         this.input = input
+        this.authorData = authorData
         this.initVis()
     }
 
@@ -68,6 +69,19 @@ class SearchResults {
         d3.select('#resultCt').html(`${data.length} poems containing ${input}. 
                 ${data.filter(d => d['Before or after'] == 'Before').length} from before invasion, ${data.filter(d => d['Before or after'] == 'After').length} from after invasion.`)
         
+
+        var author2info = new Object()
+        var birthplaceCts = new Object()
+        this.authorData.map(function(d) { birthplaceCts[d.Country] = 0; author2info[d.Author] = d })
+
+        data.map(function(d) {
+            if (author2info[d.Author]) {
+                birthplaceCts[author2info[d.Author].Country] += 1
+            }
+        })
+
+        console.log(birthplaceCts)
+
         var resultsByPoem = d3.select('#results').selectAll('.poemResult')
             .data(data)
             .enter()
@@ -81,11 +95,17 @@ class SearchResults {
                 } else {
                     color = 'red'
                 }
-                
-                var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date (d['Date posted']))})` : ''
+                var city; var country
+                var aInfo = author2info[d.Author]
+                if (!aInfo) {
+                    city = 'N/A'; country = 'N/A'
+                } else {
+                    city = aInfo.City; country = aInfo.Country;
+                }
 
-                return `<span style='color:${color}'>${d['Before or after']}${date}:</span>
-                        <b>${d.Author}</b>, <i>${d.Source}</i>`
+                var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date (d['Date posted']))})` : ''
+                return `<span style='font-size: 12px'><span style='color:${color}'>${d['Before or after']}${date}:</span>
+                        <b>${d.Author}</b>, <i>${d.Source}</i> (${city}, ${country})</span>`
             })
 
         resultsByPoem.each(function (p) {

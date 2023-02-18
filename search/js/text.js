@@ -1,7 +1,8 @@
 class TextPanel {
 
-    constructor(poemData) {
+    constructor(poemData,authorData) {
         this.data = poemData
+        this.authorData = authorData
         this.initVis()
     }
 
@@ -25,10 +26,13 @@ class TextPanel {
     * */
 
     updateVis(thisPoem) {
+        let vis = this;
+
+
+        var authorInfo = this.authorData[this.authorData.map(d => d.Author).indexOf(thisPoem.Author)]
+
         d3.select('#poemTxt').html('')
-
         d3.select('#poemMeta').html('')
-
         d3.select('#poemMeta').html(function () {
             var color = 'black'
             if (thisPoem['Before or after'] == 'Before') {
@@ -40,7 +44,8 @@ class TextPanel {
             var date = thisPoem['Date posted'] != 'None' ? ` (${parseDate(new Date(thisPoem['Date posted']))})` : ''
 
             return `<span style='color:${color}'>${thisPoem['Before or after']}${date}:</span>
-                    <b>${thisPoem.Author}</b>, <i>${thisPoem.Source}</i>`
+                    <b>${thisPoem.Author}</b>, <i>${thisPoem.Source}</i>
+                    <br>Author birthplace: ${authorInfo.City}, ${authorInfo.Country}`
         })
 
         var input = d3.select('#form1').property('value')

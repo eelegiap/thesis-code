@@ -112,7 +112,7 @@ function draw_chart(data, i, recData) {
 function draw_batch(i) {
     
     // keywordData2-9_PCA2TSNE_avg-False_TSNEonly-False_${i}.json
-    d3.json(`embedData/onlyTSNEperplexity5/keywordData2-9_TSNE_avg-False_TSNEonly-True_${i}.json`).then(function (data) {
+    d3.json(`embedData/perplexity2/keywordData2-15_TSNE_${i}.json`).then(function (data) {
         d3.json('Full_Poem_Dataset_2-3.json').then(function (recData) {
             // var i = Object.keys(data).indexOf('рука')
             var i = 0
