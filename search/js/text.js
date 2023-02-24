@@ -16,9 +16,9 @@ class TextPanel {
     wrangleData(id) {
         let vis = this;
         var thisPoem = this.data.find(d => d.UniqueIndex == id)
-
         this.updateVis(thisPoem)
-
+        d3.selectAll('.poemResult').classed('border',false)
+        d3.select('#id'+id).classed('border',true)
     }
 
     /*
@@ -45,7 +45,8 @@ class TextPanel {
 
             return `<span style='color:${color}'>${thisPoem['Before or after']}${date}:</span>
                     <b>${thisPoem.Author}</b>, <i>${thisPoem.Source}</i>
-                    <br>Author birthplace: ${authorInfo.City}, ${authorInfo.Country}`
+                    <br>Author birthplace: ${authorInfo.City}, ${authorInfo.Country}
+                    <br>Poem ID: ${thisPoem.UniqueIndex}`
         })
 
         var input = d3.select('#form1').property('value')

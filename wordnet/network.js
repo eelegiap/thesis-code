@@ -2,30 +2,35 @@
 
 function draw(dataType) {
     d3.selectAll('.toRemove').remove('')
+    d3.selectAll('svg').remove()
+    d3.select('#period').text(dataType)
 
     // Define the div for the tooltip
     var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip toRemove")
         .style("opacity", 0);
 
-    d3.selectAll('svg').remove()
-
     var width = screen.width,
-        height = screen.height * 1;
+        height = screen.height * .75;
 
     var color = d3.scale.category20();
     // var origLinkOpacity = .6
     var initFS = '14px'
 
     var force = d3.layout.force()
-        .charge(-10)
+        .charge(-5)
         .linkDistance(175)
+        .friction(0.3)
+        // .linkStrength(0.1)
+        // .gravity(0.1)
+        // .theta(0.8)
+        // .alpha(0.1)
         .size([width, height]);
 
 
-    var initialThreshold = 20
-    var lower = initialThreshold - 15
-    var upper = initialThreshold + 15
+    var initialThreshold = 2
+    var lower = initialThreshold - 0
+    var upper = initialThreshold + 25
     var x = d3.scale.linear()
         .domain([lower, upper])
         .range([400, 100])
@@ -86,9 +91,9 @@ function draw(dataType) {
         .style("opacity", 0.75)
         .text("co-occurrence threshold")
 
-    d3.json(`wordnet_2_lines_all_stops_21.json`, function (error, graph) {
+    d3.json(`data/${dataType}-wordnet2lines_allstops_2-21.json`, function (error, graph) {
 
-        d3.json(`label2lines_21.json`, function (label2lines) {
+        d3.json(`data/${dataType}-label2lines_2-21.json`, function (label2lines) {
 
             graph.links.forEach(function (d, i) { d.i = i; });
 
@@ -337,15 +342,14 @@ function calcWidth(numAuthors) {
 
 $(document).ready(function () {
     console.log("ready!");
-    draw()
+    drawCorrectNet()
 
     $('.anytoggle').change(function () {
         drawCorrectNet()
     })
     
     function drawCorrectNet() {
-        var whichData = ($('#toggle').prop('checked')) ? 'notPEN' : 'PEN'
-        var whichLang = $('#lang').prop('checked') ? 'Ukrainian' : 'Russian'
-        draw(whichData, whichLang)
+        var whichData = ($('#toggle').prop('checked')) ? 'Before' : 'After'
+        draw(whichData)
     }
 });

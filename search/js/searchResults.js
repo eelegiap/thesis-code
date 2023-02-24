@@ -39,7 +39,7 @@ class SearchResults {
                                 'lineIdx': i,
                                 'lineTxt': textByLine[i],
                                 'lineToken': line.texts[j],
-                                'tokenSpan' : line.spans[j]
+                                'tokenSpan': line.spans[j]
                             })
                         forms.add(line.texts[j])
                         inputFound = true
@@ -49,7 +49,7 @@ class SearchResults {
             return inputFound
         })
 
-        dataByInput = dataByInput.sort((a,b) => a.Author.split(' ')[1] > b.Author.split(' ')[1])
+        dataByInput = dataByInput.sort((a, b) => a.Author.split(' ')[1] > b.Author.split(' ')[1])
 
         vis.updateVis(dataByInput);
 
@@ -68,13 +68,13 @@ class SearchResults {
         d3.select('#resultCt').html('')
         d3.select('#resultCt').html(`${data.length} poems containing ${input}. 
                 ${data.filter(d => d['Before or after'] == 'Before').length} from before invasion, ${data.filter(d => d['Before or after'] == 'After').length} from after invasion.`)
-        
+
 
         var author2info = new Object()
         var birthplaceCts = new Object()
-        this.authorData.map(function(d) { birthplaceCts[d.Country] = 0; author2info[d.Author] = d })
+        this.authorData.map(function (d) { birthplaceCts[d.Country] = 0; author2info[d.Author] = d })
 
-        data.map(function(d) {
+        data.map(function (d) {
             if (author2info[d.Author]) {
                 birthplaceCts[author2info[d.Author].Country] += 1
             }
@@ -87,8 +87,8 @@ class SearchResults {
             .enter()
             .append('div')
             .attr('class', 'poemResult')
-            .attr('id', d => d.UniqueIndex)
-            .html(function(d) {
+            .attr('id', d => 'id'+d.UniqueIndex)
+            .html(function (d) {
                 var color = 'black'
                 if (d['Before or after'] == 'Before') {
                     color = 'blue'
@@ -103,9 +103,9 @@ class SearchResults {
                     city = aInfo.City; country = aInfo.Country;
                 }
 
-                var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date (d['Date posted']))})` : ''
+                var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date(d['Date posted']))})` : ''
                 return `<span style='font-size: 12px'><span style='color:${color}'>${d['Before or after']}${date}:</span>
-                        <b>${d.Author}</b>, <i>${d.Source}</i> (${city}, ${country})</span>`
+                        <b>${d.Author}</b>, <i>${d.Source}</i> (${city}, ${country}) [${d.UniqueIndex}]</span>`
             })
 
         resultsByPoem.each(function (p) {
@@ -126,11 +126,11 @@ class SearchResults {
         })
 
         d3.selectAll('.poemResult').on('click', function () {
-            var uniqueID = d3.select(this).attr('id')
+            var uniqueID = d3.select(this).attr('id').replaceAll('id','')
             myText.wrangleData(uniqueID)
-        }).on('mouseover', function() {
+        }).on('mouseover', function () {
             d3.select(this).transition().style('background-color', 'rgba(176, 196, 222, 0.302)')
-        }).on('mouseout', function() {
+        }).on('mouseout', function () {
             d3.select(this).transition().style('background-color', 'transparent')
         })
     }

@@ -6,7 +6,7 @@ function draw_chart(data, i, recData) {
         .style("opacity", 0);
 
 
-    var keywords = Object.keys(data).sort(function(a,b) { return data[a].length < data[b].length})
+    var keywords = Object.keys(data).sort(function(a,b) { return a < b})
     var keyword = keywords[i]
     d3.select('#keyword').attr('class', 'keyword' + i).text(keyword)
 

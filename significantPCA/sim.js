@@ -23,22 +23,37 @@ function drawChart(result, iod) {
 
     $("#graph").empty();
 
-    var startvectors = []
+    var startvectorsbert = []
+    var startvectorsnavec = []
     var labels = []
     var result = result[iod]
     result.forEach(function (elt) {
-        startvectors.push(elt.vector)
+        startvectorsbert.push(elt.bertvector)
+        startvectorsnavec.push(elt.navecvector)
         // labels.push(`${elt.word}`)
-        // labels.push(`${elt.translatedword.toLowerCase()}`)
-        labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
+        labels.push(`${elt.translatedword.toLowerCase()}`)
+        // labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
     })
 
-    var vectors = PCA.getEigenVectors(startvectors);
-    var adData = PCA.computeAdjustedData(startvectors, vectors[0], vectors[1])
-    var betterData = adData.formattedAdjustedData
+    var vectors = PCA.getEigenVectors(startvectorsbert);
+    var adData = PCA.computeAdjustedData(startvectorsbert, vectors[0], vectors[1])
+    var betterDatabert = adData.formattedAdjustedData
+
+    var vectors = PCA.getEigenVectors(startvectorsnavec);
+    var adData = PCA.computeAdjustedData(startvectorsnavec, vectors[0], vectors[1])
+    var betterDatanavec = adData.formattedAdjustedData
+    
+    console.log(betterDatabert)
+    console.log(betterDatanavec)
+    
+    var betterData = [[],[]]
+    for (let i = 0; i < result.length; i++) {
+        betterData[0].push((betterDatabert[0][i]+2*betterDatanavec[0][i])/3)
+        betterData[1].push((betterDatabert[1][i]+2*betterDatanavec[1][i])/3)
+    }
 
     var data = []
-    for (var i = 0; i < startvectors.length; i++) {
+    for (var i = 0; i < result.length; i++) {
         if (betterData[0][i] === undefined) {
             break;
         }
@@ -65,11 +80,11 @@ function drawChart(result, iod) {
         .style("opacity", 0);
 
     var x = d3.scaleLinear()
-        .domain([xMin - .25, xMax + 1.5])
+        .domain([xMin - .15, xMax + 1.5])
         .range([0, width])
 
     var y = d3.scaleLinear()
-        .domain([yMin - .25, yMax + .25])
+        .domain([yMin - .15, yMax + .5])
         .range([height, 0]);
 
     var xAxis = d3.axisBottom(x).ticks(12),
@@ -177,8 +192,8 @@ function drawChart(result, iod) {
         var s = d3.event.selection;
         if (!s) {
             if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
-            x.domain([xMin - 1, xMax + 2])
-            y.domain([yMin - 1, yMax + 1])
+            x.domain([xMin - .15, xMax + 1.5])
+            y.domain([yMin - .15, yMax + .5])
         } else {
 
             x.domain([s[0][0], s[1][0]].map(x.invert, x));
@@ -210,7 +225,7 @@ function drawChart(result, iod) {
 
 
 $(document).ready(function () {
-    d3.json("sigMeanDiffVecsTranslated1.json").then(function (result) {
+    d3.json("sigMeanDiffVecsTranslated4.json").then(function (result) {
         var data = { 'increase': [], 'decrease': [] }
         // make into one JSON
 

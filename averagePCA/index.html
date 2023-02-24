@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PCA Plot</title>
+    <title>Average Differences in BERT</title>
     <!-- <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
@@ -79,14 +79,9 @@
 <body>
     <div class='container'>
         <div class='row'>
-            <h2>CoRusPo: PCA Graph of Words Experiencing Significant Change</h2>
+            <h2>CoRusPo: PCA Graph</h2>
         </div>
         <div class='row'>
-            <h4>
-                All terms shown on the graph experienced a significant change in 
-                poem frequency in the subsets of the corpus from pre-invasion to post-invasion.
-                Graphs aid in identifying trends in the change of word frequency over time in the corpus. 
-            </h4>
             <h4>The process for calculating these vectors is:</h4>
             <ol>
                 <li>For each word in the corpus, calculate its frequency in each subset (pre- and post-invasion)</li>
@@ -105,7 +100,10 @@
             <p id='graph-descript' class=hide></p>
     
         </div>
+        <p id='output0'></p>
+        <hr>
+        <p id='output1'></p>
     </div>
-    <script src="sim.js"></script>
+    <script src="bertpca.js"></script>
 </body>
 

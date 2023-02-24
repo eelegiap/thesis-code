@@ -99,3 +99,6 @@ input,
     width: 25%;
     float: left
 }
+.border {
+    border: 2px solid black;   
+}
