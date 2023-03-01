@@ -31,8 +31,8 @@ function drawChart(result, iod) {
         startvectorsbert.push(elt.bertvector)
         startvectorsnavec.push(elt.navecvector)
         // labels.push(`${elt.word}`)
-        labels.push(`${elt.translatedword.toLowerCase()}`)
-        // labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
+        // labels.push(`${elt.translatedword.toLowerCase()}`)
+        labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
     })
 
     var vectors = PCA.getEigenVectors(startvectorsbert);
@@ -283,7 +283,7 @@ $(document).ready(function () {
             drawChart(data, iod)
         })
 
-        drawChart(data, 'increase')
+        drawChart(data, 'decrease')
     })
 
 });

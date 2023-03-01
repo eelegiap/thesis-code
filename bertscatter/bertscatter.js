@@ -1,4 +1,5 @@
 function draw_chart(data, i, recData) {
+
     d3.selectAll('.tooltip').remove()
     // Define the div for the tooltip
     var tooltip = d3.select("body").append("div")
@@ -26,7 +27,7 @@ function draw_chart(data, i, recData) {
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     var data = data[keyword]
-
+    console.log(data)
     // Add X axis
     const x = d3.scaleLinear()
         .domain([d3.min(data.map(d => d.x)), d3.max(data.map(d => d.x))])
@@ -112,8 +113,8 @@ function draw_chart(data, i, recData) {
 function draw_batch(i) {
     
     // keywordData2-9_PCA2TSNE_avg-False_TSNEonly-False_${i}.json
-    d3.json(`embedData/perplexity2/keywordData2-15_TSNE_${i}.json`).then(function (data) {
-        d3.json('Full_Poem_Dataset_2-3.json').then(function (recData) {
+    d3.json(`BERT_vecs_0.json`).then(function (data) {
+        d3.json('Full_Poem_Dataset_2-26.json').then(function (recData) {
             // var i = Object.keys(data).indexOf('рука')
             var i = 0
             draw_chart(data, i, recData)

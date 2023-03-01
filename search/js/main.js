@@ -17,7 +17,8 @@ function initMainPage(data) {
     let authorData = data[1];
     mySearchResults = new SearchResults(poemData,input,authorData)
     myText = new TextPanel(poemData,authorData);
-    myText.wrangleData(1569)
+    const q = window.location.href.split('=')[1]
+    myText.wrangleData(+q)
     // change_level("wordlevel")
 }
 
@@ -36,3 +37,20 @@ function choose(choices) {
     var index = Math.floor(Math.random() * choices.length);
     return choices[index];
 }
+
+// var dataOptions = ['Keywords','Authors']
+// d3.select("#dropdown")
+// .selectAll('myOptions')
+// .data(dataOptions)
+// .enter()
+// .append('option')
+// .text(function (d) { return d; }) // text showed in the menu
+// .attr("value", function (d) { return d; })
+
+// d3.select("#dropdown").on("change", function (d) {
+// var selected = d3.select(this).property("value")
+// if (selected == 'Keywords') {
+// } else {
+
+// }
+// })
