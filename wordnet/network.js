@@ -1,6 +1,6 @@
 // https://github.com/d3/d3-scale-chromatic#schemeRdBu
 
-function draw(dataType) {
+function draw(dataType, iT, start) {
     d3.selectAll('.toRemove').remove('')
     d3.selectAll('svg').remove()
     d3.select('#period').text(dataType)
@@ -28,9 +28,9 @@ function draw(dataType) {
         .size([width, height]);
 
 
-    var initialThreshold = 2
-    var lower = initialThreshold - 0
-    var upper = initialThreshold + 25
+    var initialThreshold = iT
+    var lower = 1
+    var upper = 30
     var x = d3.scale.linear()
         .domain([lower, upper])
         .range([400, 100])
@@ -83,108 +83,114 @@ function draw(dataType) {
         .attr("transform", "translate(" + (width - 200) + ",0)")
         .attr("r", 5);
 
-    svg.append("text")
+    svg.append('text')
+        .attr('id', 'cot')
         .attr("x", width - 195)
         .attr("y", 80)
         .attr("text-anchor", "end")
         .attr("font-size", "12px")
         .style("opacity", 0.75)
-        .text("co-occurrence threshold")
+        .text(`co-occurrence threshold: ${initialThreshold}`)
 
     d3.json(`data/${dataType}-wordnet2lines_allstops_2-21.json`, function (error, graph) {
 
-        d3.json(`data/${dataType}-label2lines_2-21.json`, function (label2lines) {
+        d3.json(`../../${dataType}-label2lines_2-21.json`, function (label2lines) {
 
             graph.links.forEach(function (d, i) { d.i = i; });
 
             function brushed() {
                 var value = brush.extent()[0];
+                // if (true) {
+                    if (start || Math.floor(value) != d3.select('#cot').text().split(': ')[1]) {
+                    console.log('brushed')
+                    d3.select('#cot').text(`co-occurrence threshold: ${Math.ceil(value)}`)
 
-                if (d3.event.sourceEvent) {
-                    value = x.invert(d3.mouse(this)[1]);
-                    brush.extent([value, value]);
-                }
-                handle.attr("cy", x(value));
-                var threshold = value;
-
-                var thresholded_links = graph.links.filter(function (d) { return (d.linkCt > threshold); });
-
-                force
-                    .links(thresholded_links);
-
-                var link = links_g.selectAll(".link")
-                    .data(thresholded_links, function (d) { return d.i; });
-
-                link.enter().append("line")
-                    .attr("class", "link")
-                    // .attr('id', d => `link_${d.i}`)
-                    .style('stroke', '#999')
-                    .style('stroke-opacity', .6)
-                    .style("stroke-width", '7px')
-                    //  function (d) { return calcWidth(d.authorCt.length) })
-                // return d.linkCt/10 })
-
-                link.exit().remove();
-
-                link.on('mouseover', function (d) {
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    tooltip.html(`Link: <b>${d.source.id} and ${d.target.id}</b><br>Co-occurrences: <b>${d.linkCt}</b><br>Authors: <b>${d.authorCt.join(', ')}</b>`)
-                        .style("left", (d3.event.pageX + 20) + "px")
-                        .style("top", (d3.event.pageY - 28) + "px");
-                }).on('mouseout', function () {
-                    tooltip.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                }).on('click', function (d) {
-                    var label = `${d.source.id}AND${d.target.id}`
-                    var labelData = label2lines[label]
-                    d3.select('#infoBox').html(`<b>Excerpts with ${d.source.id} and ${d.target.id}:</b>`)
-                    d3.select('#infoBox').selectAll('p').remove()
-                    d3.select('#infoBox').selectAll('excerpt')
-                        .data(labelData)
-                        .enter()
-                        .append('p')
-                        .html(f => f.excerpt.replaceAll('\n', '<br>') +
-                            ` <a href='${f.url}' target='_blank' class='excerptURL'>(${f.author})</a>`)
-                })
-
-                force.on("tick", function () {
-                    link.attr("x1", function (d) { return d.source.x; })
-                        .attr("y1", function (d) { return d.source.y; })
-                        .attr("x2", function (d) { return d.target.x; })
-                        .attr("y2", function (d) { return d.target.y; });
-
-                    node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-                    // .attr("cx", function (d) { return d.x; })
-                    // .attr("cy", function (d) { return d.y; });
-                });
-                force.start();
-
-                // get thresholded nodes
-                var validIDs = []
-                thresholded_links.forEach(function (tl) {
-                    var sourceID = tl.source.id
-                    var targetID = tl.target.id
-                    validIDs.push(sourceID)
-                    validIDs.push(targetID)
-                })
-                // go through all nodes, remove if not connected to thresholded link
-                d3.selectAll('.node').each(function (n) {
-                    var thisNode = d3.select(this)
-                    var nodeID = thisNode.attr('id')
-                    if (!validIDs.includes(nodeID)) {
-                        // console.log('bad node:', nodeID)
-                        thisNode.transition(200).style('opacity', 0)
-                        thisNode.classed('hide', true)
-                    } else {
-                        thisNode.transition(200).style('opacity', 1)
-                        thisNode.transition(250).style('pointer-events', 'all')
-                        thisNode.classed('hide', false)
+                    if (d3.event.sourceEvent) {
+                        value = x.invert(d3.mouse(this)[1]);
+                        brush.extent([value, value]);
                     }
-                })
-                filterGraph()
+                    handle.attr("cy", x(value));
+                    var threshold = value;
+
+                    var thresholded_links = graph.links.filter(function (d) { return (d.linkCt > threshold); });
+
+                    force
+                        .links(thresholded_links);
+
+                    var link = links_g.selectAll(".link")
+                        .data(thresholded_links, function (d) { return d.i; });
+
+                    link.enter().append("line")
+                        .attr("class", "link")
+                        // .attr('id', d => `link_${d.i}`)
+                        .style('stroke', '#999')
+                        .style('stroke-opacity', .6)
+                        .style("stroke-width", '7px')
+                    //  function (d) { return calcWidth(d.authorCt.length) })
+                    // return d.linkCt/10 })
+
+                    link.exit().remove();
+
+                    link.on('mouseover', function (d) {
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(`Link: <b>${d.source.id} and ${d.target.id}</b><br>Co-occurrences: <b>${d.linkCt}</b><br>Authors: <b>${d.authorCt.join(', ')}</b>`)
+                            .style("left", (d3.event.pageX + 20) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+                    }).on('mouseout', function () {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    }).on('click', function (d) {
+                        var label = `${d.source.id}AND${d.target.id}`
+                        var labelData = label2lines[label]
+                        d3.select('#infoBox').html(`<b>Excerpts with ${d.source.id} and ${d.target.id}:</b>`)
+                        d3.select('#infoBox').selectAll('p').remove()
+                        d3.select('#infoBox').selectAll('excerpt')
+                            .data(labelData)
+                            .enter()
+                            .append('p')
+                            .html(f => f.excerpt.replaceAll('\n', '<br>') +
+                                ` <a href='${f.url}' target='_blank' class='excerptURL'>(${f.author})</a>`)
+                    })
+
+                    force.on("tick", function () {
+                        link.attr("x1", function (d) { return d.source.x; })
+                            .attr("y1", function (d) { return d.source.y; })
+                            .attr("x2", function (d) { return d.target.x; })
+                            .attr("y2", function (d) { return d.target.y; });
+
+                        node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+                        // .attr("cx", function (d) { return d.x; })
+                        // .attr("cy", function (d) { return d.y; });
+                    });
+                    force.start();
+
+                    // get thresholded nodes
+                    var validIDs = []
+                    thresholded_links.forEach(function (tl) {
+                        var sourceID = tl.source.id
+                        var targetID = tl.target.id
+                        validIDs.push(sourceID)
+                        validIDs.push(targetID)
+                    })
+                    // go through all nodes, remove if not connected to thresholded link
+                    d3.selectAll('.node').each(function (n) {
+                        var thisNode = d3.select(this)
+                        var nodeID = thisNode.attr('id')
+                        if (!validIDs.includes(nodeID)) {
+                            // console.log('bad node:', nodeID)
+                            thisNode.transition(200).style('opacity', 0)
+                            thisNode.classed('hide', true)
+                        } else {
+                            thisNode.transition(200).style('opacity', 1)
+                            thisNode.transition(250).style('pointer-events', 'all')
+                            thisNode.classed('hide', false)
+                        }
+                    })
+                    filterGraph()
+                }
             }
 
             // draw force graph
@@ -201,7 +207,7 @@ function draw(dataType) {
                     d3.select(this)
                         .append("circle")
                         .attr("r", function (d) {
-                            return d.totalinstances/25
+                            return d.totalinstances / 25
                         })
                         .style("fill", function (d) {
                             return 'rgba(145, 187, 247, 0.788)'
@@ -248,8 +254,8 @@ function draw(dataType) {
                     }
                 })
             }).on('mouseout', function () {
-                    d3.selectAll('.link').transition().style('stroke-opacity', .6)
-                    d3.selectAll('.node').transition().style('opacity', 1)
+                d3.selectAll('.link').transition().style('stroke-opacity', .6)
+                d3.selectAll('.node').transition().style('opacity', 1)
             })
 
             brush.on("brush", brushed);
@@ -315,7 +321,7 @@ function filterGraph() {
         d3.selectAll('.node').each(function (n) {
             if (!connectedLemmas.has(n.id)) {
                 d3.select(this).transition().style('display', 'none')
-            } 
+            }
         })
         d3.selectAll('.link').each(function (d) {
             // show link if link is in relevantIDs
@@ -336,20 +342,21 @@ function roundHalf(num) {
 }
 
 function calcWidth(numAuthors) {
-    return numAuthors/5
+    return numAuthors / 5
 }
 
 
 $(document).ready(function () {
     console.log("ready!");
-    drawCorrectNet()
+    drawCorrectNet(15, true)
 
     $('.anytoggle').change(function () {
-        drawCorrectNet()
+        var thresh = +d3.select('#cot').text().split(': ')[1]
+        drawCorrectNet(thresh, true)
     })
-    
-    function drawCorrectNet() {
+
+    function drawCorrectNet(iT, start) {
         var whichData = ($('#toggle').prop('checked')) ? 'Before' : 'After'
-        draw(whichData)
+        draw(whichData, iT, start)
     }
 });

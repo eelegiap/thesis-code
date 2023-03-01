@@ -127,6 +127,7 @@ class SearchResults {
 
         d3.selectAll('.poemResult').on('click', function () {
             var uniqueID = d3.select(this).attr('id').replaceAll('id','')
+            window.history.pushState('object or string', 'Title', `/thesis-code/search/?q=${uniqueID}`)
             myText.wrangleData(uniqueID)
         }).on('mouseover', function () {
             d3.select(this).transition().style('background-color', 'rgba(176, 196, 222, 0.302)')
