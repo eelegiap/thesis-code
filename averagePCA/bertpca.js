@@ -38,7 +38,7 @@ function drawChart(result) {
     var adData = PCA.computeAdjustedData(startvectors, vectors[0], vectors[1])
     var betterData = adData.formattedAdjustedData
 
-    if (true) {
+    if (false) {
         // cosine sim
         var wordSet = new Set()
         var vecObj = new Object()
@@ -59,8 +59,8 @@ function drawChart(result) {
         })
         var sortedCosim = cosimList.sort(function (a, b) { return a.cosim > b.cosim })
         console.log('sorted cosim list:', sortedCosim)
-        d3.select('#output0').text(sortedCosim.slice(100,200).map(d => d.word).join(' '))
-        d3.select('#output1').text(sortedCosim.slice(-200,-100).map(d => d.word).join(' '))
+        d3.select('#output0').text(sortedCosim.slice(100, 200).map(d => d.word).join(' '))
+        d3.select('#output1').text(sortedCosim.slice(-200, -100).map(d => d.word).join(' '))
     }
 
 
@@ -161,7 +161,7 @@ function drawChart(result) {
     // var linedata = data.map(function(d) {
     //     return {'x1' : }
     // })
-    var lines = false
+    var lines = true
     if (lines) {
         var lineObj = new Object()
         node.each(function (d) {
@@ -300,21 +300,35 @@ function drawChart(result) {
 }
 
 $(document).ready(function () {
-    d3.json("../../files2big/before-after-average-BERT.json").then(function (result) {
-        result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
-        // result = result.filter(d => d.word.includes('After'))
-        // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
-        // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
+    d3.json('categories.json').then(function (cats) {
+        d3.json("../../files2big/before-after-average-BERT.json").then(function (result) {
+            result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
+            var relevantWords = []
+            Object.keys(cats).forEach(function(c) {
+                cats[c].forEach(function(w) {
+                    relevantWords.push(w)
+                })
+            })
+            result = result.filter(d => relevantWords.includes(d.word.split('_')[0]))
+            console.log('result length:',result.length)
+            drawChart(result)
+            // result = result.filter(d => d.word.includes('After'))
+            // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
+            // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
 
-        drawChart(result)
 
-        // d3.csv("notableWords.csv", function (data) {
-        //     var changedWords = data.different.trim().split(' ')
-        //     var sameWords = data.same.trim().split(' ')
-        //     result = result.filter(d => changedWords.includes(d.word.split('_')[0]))
-        //     drawChart(result)
-        // })
+
+            // d3.csv("notableWords.csv", function (data) {
+            //     var changedWords = data.different.trim().split(' ')
+            //     var sameWords = data.same.trim().split(' ')
+            //     result = result.filter(d => changedWords.includes(d.word.split('_')[0]))
+            //     drawChart(result)
+            // })
+        })
+
     })
+});
+
     // function getRandomSubarray(arr, size) {
     //     var shuffled = arr.slice(0), i = arr.length, temp, index;
     //     while (i--) {
@@ -325,4 +339,3 @@ $(document).ready(function () {
     //     }
     //     return shuffled.slice(0, size);
     // }
-});

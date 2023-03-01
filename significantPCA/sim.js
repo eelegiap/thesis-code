@@ -35,21 +35,45 @@ function drawChart(result, iod) {
         labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
     })
 
-    var vectors = PCA.getEigenVectors(startvectorsbert);
-    var adData = PCA.computeAdjustedData(startvectorsbert, vectors[0], vectors[1])
-    var betterDatabert = adData.formattedAdjustedData
+    // var vectors = PCA.getEigenVectors(startvectorsbert);
+    // var adData = PCA.computeAdjustedData(startvectorsbert, vectors[0], vectors[1])
+    // var betterDatabert = adData.formattedAdjustedData
 
-    var vectors = PCA.getEigenVectors(startvectorsnavec);
-    var adData = PCA.computeAdjustedData(startvectorsnavec, vectors[0], vectors[1])
-    var betterDatanavec = adData.formattedAdjustedData
-    
+    // var vectors = PCA.getEigenVectors(startvectorsnavec);
+    // var adData = PCA.computeAdjustedData(startvectorsnavec, vectors[0], vectors[1])
+    // var betterDatanavec = adData.formattedAdjustedData
+
+    function runTSNE(dists) {
+        var opt = {}
+        opt.epsilon = 10; // epsilon is learning rate (10 = default)
+        opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
+        opt.dim = 2; // dimensionality of the embedding (2 = default)
+
+        var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
+
+        // initialize data. Here we have 3 points and some example pairwise dissimilarities
+
+        tsne.initDataDist(dists);
+        console.log('initialized TSNE')
+        for (var k = 0; k < 500; k++) {
+            tsne.step(); // every time you call this, solution gets better
+        }
+
+        var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+
+        return Y
+    }
+    var betterDatabert = runTSNE(startvectorsbert)
+    var betterDatanavec = runTSNE(startvectorsnavec)
     console.log(betterDatabert)
     console.log(betterDatanavec)
-    
-    var betterData = [[],[]]
+
+    var betterData = [[], []]
     for (let i = 0; i < result.length; i++) {
-        betterData[0].push((betterDatabert[0][i]+2*betterDatanavec[0][i])/3)
-        betterData[1].push((betterDatabert[1][i]+2*betterDatanavec[1][i])/3)
+        betterData[0].push((betterDatabert[i][0] + 0 * betterDatanavec[i][0]) / 1)
+        betterData[1].push((betterDatabert[i][1] + 0 * betterDatanavec[i][1]) / 1)
+        // betterData[0].push((betterDatabert[0][i] + 2 * betterDatanavec[0][i]) / 3)
+        // betterData[1].push((betterDatabert[1][i] + 2 * betterDatanavec[1][i]) / 3)
     }
 
     var data = []
@@ -62,7 +86,7 @@ function drawChart(result, iod) {
             'y': betterData[1][i],
         })
     }
-    console.log('length',data.length)
+    console.log('length', data.length)
     // max and min for graph
     var xvals = data.map(function (pair) { return pair.x })
     var yvals = data.map(function (pair) { return pair.y })
@@ -80,11 +104,11 @@ function drawChart(result, iod) {
         .style("opacity", 0);
 
     var x = d3.scaleLinear()
-        .domain([xMin - .15, xMax + 1.5])
+        .domain([xMin - 1, xMax + 2])
         .range([0, width])
 
     var y = d3.scaleLinear()
-        .domain([yMin - .15, yMax + .5])
+        .domain([yMin - 1, yMax + 1])
         .range([height, 0]);
 
     var xAxis = d3.axisBottom(x).ticks(12),
@@ -116,7 +140,7 @@ function drawChart(result, iod) {
         .data(data)
         .enter()
         .append('g')
-        .attr('class', function(d,i) { return result[i].pos })
+        .attr('class', function (d, i) { return result[i].pos })
 
     circle = node.append("circle")
         .attr("class", `dot`)
@@ -218,7 +242,7 @@ function drawChart(result, iod) {
         label.transition(t)
             .attr("x", function (d) { return x(d.x) + 7; })
             .attr("y", function (d) { return y(d.y) + 7; })
-            d3.selectAll('.axis').selectAll("text").remove();
+        d3.selectAll('.axis').selectAll("text").remove();
     }
 
 }
@@ -283,7 +307,7 @@ $(document).ready(function () {
             drawChart(data, iod)
         })
 
-        drawChart(data, 'decrease')
+        drawChart(data, 'increase')
     })
 
 });

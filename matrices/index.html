@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy">
+<meta charset="utf-8">
+<title>Co-occurrence Matrix</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .background {
+    fill: #eee;
+  }
+
+  line {
+    stroke: #fff;
+  }
+
+  text.active {
+    fill: red;
+  }
+</style>
+<!-- <script src="d3-v2-min.js" charset="utf-8"></script> -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+<body>
+  <header>
+
+  </header>
+
+  <p>Order: <select id="order">
+      <option value="name">by Name</option>
+      <option value="count">by Frequency</option>
+      <!-- <option value="group">by Cluster</option> -->
+    </select>
+  </p>
+
+
+  <svg id="matrix"></svg>
+  <br>
+  <section>
+    <aside style="margin-top:80px;">
+  </section>
+  <footer>
+
+  </footer>
+</body>
+
+</html>
+
+<script src="matrix.js"></script>
