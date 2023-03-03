@@ -1,7 +1,11 @@
-d3.json('')
 var margin = { top: 80, right: 80, bottom: 10, left: 100 },
-  width = 400,
-  height = 400;
+  width = 1000,
+  height = 1000;
+
+// Define the div for the tooltip
+var tooltip = d3.select("body").append("div")
+  .attr("class", "tooltip toRemove")
+  .style("opacity", 0);
 
 var x = d3.scaleBand().range([0, width]),
   z = d3.scaleLinear().domain([0, 4]).clamp(true),
@@ -14,20 +18,37 @@ var svg = d3.select("#matrix")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("../wordnet/data/After-wordnet2lines_allstops_2-21.json").then(function (jsondata) {
+d3.json("../../allLinkData3-3_2.json").then(function (jsondata) {
+
   var goodIndices = []
   var newNodes = []
   var old2new = new Object()
+
+  var keyword = 'язык'
+  var keywordID = jsondata.nodes.map(d => d.id).indexOf(keyword)
+  // find those nodes connected to links which have the keyword and have links greater than some amount
+  jsondata.links.forEach(function (d) {
+    if ([d.source, d.target].includes(keywordID)) {
+      if (d.linkCtBefore > 3 || d.linkCtAfter > 3) {
+        goodIndices.push(d.source)
+        goodIndices.push(d.target)
+      }
+    }
+  })
+
   var ctr = 0
   jsondata.nodes.forEach(function (d, i) {
-    if (['русский', 'российский', 'родина', 'страна', 'язык', 'родный', 'мы', 'вы'].includes(d.id)) {
-      goodIndices.push(i)
+    // if (['русский', 'российский', 'родина', 'страна', 'язык', 'родный', 'рот', 'слово', 'петь', 'говорить', 'сказать', 'знать'].includes(d.id)) {
+    // SOMETHING?
+    if (goodIndices.includes(i)) {
+      // goodIndices.push(i)
+
       old2new[i] = ctr
       newNodes.push(d)
       ctr += 1
     }
   })
-  console.log('goodIndices', goodIndices)
+
   var matrix = [],
     nodes = newNodes,
     n = nodes.length;
@@ -42,18 +63,33 @@ d3.json("../wordnet/data/After-wordnet2lines_allstops_2-21.json").then(function 
 
   // Convert links to matrix; count character occurrences.
   var dataLinks = jsondata.links.filter(d => goodIndices.includes(d.source) && goodIndices.includes(d.target))
+  var values = []
   dataLinks.map(function (d) {
     // reassign numbers
     d.source = old2new[d.source]
     d.target = old2new[d.target]
-    d.value = d.linkCt
+    if (d.linkCtBefore > d.linkCtAfter) {
+      d.value = ((d.linkCtBefore + 1) - (d.linkCtAfter + 1)) / (d.linkCtAfter + 1)
+      d.which = 'Before'
+    } else {
+      d.value = ((d.linkCtAfter + 1) - (d.linkCtBefore + 1)) / (d.linkCtBefore + 1)
+      d.which = 'After'
+    }
+
+    values.push(d.value)
   })
-  console.log(dataLinks)
-  dataLinks.forEach(function (link) {
-    matrix[link.source][link.target].z += link.value;
-    matrix[link.target][link.source].z += link.value;
-    matrix[link.source][link.source].z += link.value;
-    matrix[link.target][link.target].z += link.value;
+
+  console.log(quantile(values, .05), quantile(values, .95))
+
+  dataLinks.forEach(function (link, i) {
+    matrix[link.source][link.target].z = link.value;
+    matrix[link.target][link.source].z = link.value;
+    matrix[link.source][link.source].z = 0;
+    matrix[link.target][link.target].z = 0;
+    matrix[link.target][link.source]['index'] = i
+    matrix[link.source][link.target]['index'] = i
+    matrix[link.target][link.source]['which'] = link.which
+    matrix[link.source][link.target]['which'] = link.which
     nodes[link.source].count += link.value;
     nodes[link.target].count += link.value;
   });
@@ -114,8 +150,15 @@ d3.json("../wordnet/data/After-wordnet2lines_allstops_2-21.json").then(function 
       .attr("x", function (d) { return x(d.x); })
       .attr("width", x.bandwidth())
       .attr("height", x.bandwidth())
-      .style("fill-opacity", function (d) { return z(d.z); })
-      .style("fill", function (d) { return nodes[d.x].group == nodes[d.y].group ? c(nodes[d.x].group) : null; })
+      .style("fill-opacity", function (d) { return z(Math.abs(d.z)) })
+      .style("fill", function (d) {
+        // if (nodes[d.x].group == nodes[d.y].group) {
+        if (d.which == 'Before') {
+          return 'tomato'
+        } else {
+          return '#00A36C'
+        }
+      })
       .on("mouseover", mouseover)
       .on("mouseout", mouseout);
   }
@@ -123,14 +166,42 @@ d3.json("../wordnet/data/After-wordnet2lines_allstops_2-21.json").then(function 
   function mouseover(p) {
     d3.selectAll(".row text").classed("active", function (d, i) { return i == p.y; });
     d3.selectAll(".column text").classed("active", function (d, i) { return i == p.x; });
+    d3.select(this).transition(100).style('fill','#3599dd').on("end", revertColor);
+    function revertColor() {
+      d3.select(this).transition(800).style("fill", function (d) {
+        // if (nodes[d.x].group == nodes[d.y].group) {
+        if (d.which == 'Before') {
+          return 'tomato'
+        } else {
+          return '#00A36C'
+        }
+      })
+    }
+    // tooltip
+    var d = dataLinks[p.index]
+    var allAuthors = Array.from(new Set(d.authors.Before.concat(d.authors.After)))
+    tooltip.transition()
+      .duration(200)
+      .style("opacity", .9);
+    tooltip.html(`Link: <b>${d.sourceLemma} and ${d.targetLemma}</b><br>
+                  Co-occurrences Before: <b>${d.linkCtBefore}</b><br>
+                  Co-occurrences After: <b>${d.linkCtAfter}</b><br>
+                  AuthorCt (${allAuthors.length}): <b>${allAuthors.join(', ')}</b>`)
+      .style("left", (d3.event.pageX + 20) + "px")
+      .style("top", (d3.event.pageY - 28) + "px");
+
   }
 
   function mouseout() {
     d3.selectAll("text").classed("active", false);
+    // tooltip
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
   }
 
   d3.select("#order").on("change", function () {
-    clearTimeout(timeout);
+    // clearTimeout(timeout);
     order(this.value);
   });
 
@@ -151,8 +222,24 @@ d3.json("../wordnet/data/After-wordnet2lines_allstops_2-21.json").then(function 
       .attr("transform", function (d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
   }
 
-  var timeout = setTimeout(function () {
-    order("name");
-    d3.select("#order").property("selectedIndex", 2).node().focus();
-  }, 5000);
+  // var timeout = setTimeout(function () {
+  //   order("name");
+  //   d3.select("#order").property("selectedIndex", 2).node().focus();
+  // }, 5000);
 });
+
+const asc = arr => arr.sort((a, b) => a - b);
+const sum = arr => arr.reduce((a, b) => a + b, 0);
+const mean = arr => sum(arr) / arr.length;
+
+const quantile = (arr, q) => {
+  const sorted = asc(arr);
+  const pos = (sorted.length - 1) * q;
+  const base = Math.floor(pos);
+  const rest = pos - base;
+  if (sorted[base + 1] !== undefined) {
+    return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+  } else {
+    return sorted[base];
+  }
+};

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html class="ocks-org do-not-copy">
+<html>
 <meta charset="utf-8">
 <title>Co-occurrence Matrix</title>
-<link rel="stylesheet" href="styles.css">
+<!-- <link rel="stylesheet" href="styles.css"> -->
 <style>
   .background {
     fill: #eee;
@@ -15,9 +15,23 @@
   text.active {
     fill: red;
   }
+  div.tooltip {
+        text-align: left;
+        position: absolute;
+        width: 300px;
+        height: fit-content;
+        padding: 6px;
+        font: 15px sans-serif;
+        background: lightgray;
+        border: 0px;
+        border-radius: 5px;
+        pointer-events: none;
+    }
 </style>
 <!-- <script src="d3-v2-min.js" charset="utf-8"></script> -->
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
 
 <body>
   <header>
