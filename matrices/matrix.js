@@ -1,6 +1,6 @@
 var margin = { top: 80, right: 80, bottom: 10, left: 100 },
-  width = 1000,
-  height = 1000;
+  width = 800,
+  height = 800;
 
 // Define the div for the tooltip
 var tooltip = d3.select("body").append("div")
@@ -18,20 +18,45 @@ var svg = d3.select("#matrix")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("../../allLinkData3-3_2.json").then(function (jsondata) {
+d3.json("../../allLinkData3-3_3.json").then(function (jsondata) {
+  // d3.json(`../../${dataType}-label2lines_2-21.json`, function (label2lines) {
 
   var goodIndices = []
   var newNodes = []
   var old2new = new Object()
 
-  var keyword = 'язык'
-  var keywordID = jsondata.nodes.map(d => d.id).indexOf(keyword)
+  // var keyword = 'язык'
+  // var keywordID = jsondata.nodes.map(d => d.id).indexOf(keyword)
+
+  // var keywords = 'Винница, Буча, Ирпень, Киев, Москва, Мариуполь, Одесса, Крым, Луганск, Донецк, Днепр, Запорожье, Львов, Харьков, Херсон, Симферополь, Петербург, чернигов, Черновцы, житомир, Полтава, Николаев, Гостомель, Краматорск'.split(', ').map(d => d.toLowerCase())
+  // var keywords = 'блядь нахуй хуйня хуй ёбаный мат'.split(' ')
+  // var keywords = ['язык']
+  var keywords = ['чехов','булгаков','пушкин','толстой','достоевский']
+  var keywordIDs = []
+  jsondata.nodes.forEach(function(d,i) {
+    if (keywords.includes(d.id)) {
+      return keywordIDs.push(i)
+    }
+  })
+  console.log(keywordIDs)
+
+  var posDict = new Object()
+  jsondata.nodes.map(function (d, i) { posDict[i] = d.pos })
+
+  var thresh = 1
+  // var acceptablePOS = ['NOUN','ADJ','VERB']
+  // var acceptablePOS = ['NOUN', 'ADP', 'PROPN', 'ADJ', 'DET', 'SCONJ', 'VERB', 'ADV', 'PRON', 'CCONJ', 'PART', 'AUX', 'NUM', 'INTJ']
+  var acceptablePOS = ['NOUN']
   // find those nodes connected to links which have the keyword and have links greater than some amount
   jsondata.links.forEach(function (d) {
-    if ([d.source, d.target].includes(keywordID)) {
-      if (d.linkCtBefore > 3 || d.linkCtAfter > 3) {
-        goodIndices.push(d.source)
-        goodIndices.push(d.target)
+    if (keywordIDs.includes(d.source) || keywordIDs.includes(d.target)) {
+      // if (true) {
+      if (acceptablePOS.includes(posDict[d.source]) || acceptablePOS.includes(posDict[d.target])) {
+
+        if (d.linkCtBefore > thresh || d.linkCtAfter > thresh) {
+          goodIndices.push(d.source)
+          goodIndices.push(d.target)
+        }
       }
     }
   })
@@ -102,7 +127,7 @@ d3.json("../../allLinkData3-3_2.json").then(function (jsondata) {
   };
 
   // The default sort order.
-  x.domain(orders.name);
+  x.domain(orders.count);
 
   svg.append("rect")
     .attr("class", "background")
@@ -160,13 +185,14 @@ d3.json("../../allLinkData3-3_2.json").then(function (jsondata) {
         }
       })
       .on("mouseover", mouseover)
-      .on("mouseout", mouseout);
+      .on("mouseout", mouseout)
+      .on('click', click)
   }
 
   function mouseover(p) {
     d3.selectAll(".row text").classed("active", function (d, i) { return i == p.y; });
     d3.selectAll(".column text").classed("active", function (d, i) { return i == p.x; });
-    d3.select(this).transition(100).style('fill','#3599dd').on("end", revertColor);
+    d3.select(this).transition(100).style('fill', '#3599dd').on("end", revertColor);
     function revertColor() {
       d3.select(this).transition(800).style("fill", function (d) {
         // if (nodes[d.x].group == nodes[d.y].group) {
@@ -198,6 +224,18 @@ d3.json("../../allLinkData3-3_2.json").then(function (jsondata) {
     tooltip.transition()
       .duration(500)
       .style("opacity", 0);
+  }
+  function click() {
+    var label = `${d.source.id}AND${d.target.id}`
+    var labelData = label2lines[label]
+    d3.select('#infoBox').html(`<b>Excerpts with ${d.source.id} and ${d.target.id}:</b>`)
+    d3.select('#infoBox').selectAll('p').remove()
+    d3.select('#infoBox').selectAll('excerpt')
+      .data(labelData)
+      .enter()
+      .append('p')
+      .html(f => f.excerpt.replaceAll('\n', '<br>') +
+        ` <a href='${f.url}' target='_blank' class='excerptURL'>(${f.author})</a>`)
   }
 
   d3.select("#order").on("change", function () {

@@ -72,14 +72,14 @@
     <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js" integrity="sha512-PLXQkW9K9twsr6kg2YomYaGdxSAEWSlr25vmbfxXxnYtDop+CPzidL8IDsQZMNPYF2UgLSLVyUxyAjwyTcMVtQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/pca-js@1.0.0/pca.min.js'></script>
+    <!-- <script src='https://cdn.jsdelivr.net/npm/pca-js@1.0.0/pca.min.js'></script> -->
 
 </head>
 
 <body>
     <div class='container'>
         <div class='row'>
-            <h2>CoRusPo: PCA Graph</h2>
+            <h2>CoRusPo: t-SNE Graph</h2>
         </div>
         <div class='row'>
             <h4>The process for calculating these vectors is:</h4>
@@ -87,7 +87,7 @@
                 <li>For each word in the corpus, calculate its frequency in each subset (pre- and post-invasion)</li>
                 <li>Run two-sample two-tailed T-test on frequency values to find word with sig. freq. changes</li>
                 <li>Convert these "significant" words to 300-dim Russian word-embedding vectors</li>
-                <li>Project these embedding vectors to 2-dim using PCA and plot here by part of speech.</li>
+                <li>Project these embedding vectors to 2-dim using t-SNE and plot here by part of speech.</li>
             </ol>
             
             <hr>
@@ -104,6 +104,8 @@
         <hr>
         <p id='output1'></p>
     </div>
-    <script src="bertpca.js"></script>
+    <script src="../tsne.js"></script>
+
+    <script src="berttsne.js"></script>
 </body>
 

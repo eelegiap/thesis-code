@@ -100,8 +100,8 @@ function draw(dataType, iT, start) {
 
             function brushed() {
                 var value = brush.extent()[0];
-                // if (true) {
-                    if (start || Math.floor(value) != d3.select('#cot').text().split(': ')[1]) {
+                if (true) {
+                    // if (start || Math.floor(value) != d3.select('#cot').text().split(': ')[1]) {
                     console.log('brushed')
                     d3.select('#cot').text(`co-occurrence threshold: ${Math.ceil(value)}`)
 

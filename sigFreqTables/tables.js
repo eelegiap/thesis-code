@@ -3,7 +3,7 @@ function draw(data, pos) {
     d3.selectAll('.tableRemove').remove()
     const pct = d3.format(".2%")
     // numerical filters
-    data = data.filter(d => !(d.info.Before * d.info.After == 0))
+    // data = data.filter(d => !(d.info.Before * d.info.After == 0))
     data = data.filter(d => d.info.stats.pvalue < .05)
     // keyword filters
     data = data.filter(d => /[а-яА-ЯЁё]/.test(d.keyword) && !d.keyword.includes('_'))
@@ -71,7 +71,7 @@ function draw(data, pos) {
 $(document).ready(function () {
     d3.json('frequencyData3-1.json', function (data) {
         d3.json('translations.json', function (tdata) {
-            data.map(d => d.translation = tdata[d.keyword])
+            data.map(d => d.translation = tdata[d.keyword] ? tdata[d.keyword].toLowerCase() : '')
             console.log(data)
             draw(data, 'All POS')
 

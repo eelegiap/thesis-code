@@ -1,4 +1,4 @@
-function drawChart(result) {
+function drawChart(result, places, translations) {
 
     // $('#output0').empty();
     // $('#output1').empty();
@@ -26,52 +26,46 @@ function drawChart(result) {
     var startvectors = []
     var labels = []
     console.log('result length:', result.length)
-    result.forEach(function (elt) {
-        startvectors.push(elt.vector)
-        labels.push(`${elt.word}`)
-        // labels.push(`${elt.translatedword.toLowerCase()}`)
+    result.forEach(function (w) {
+        startvectors.push(w.vector)
+        // labels.push(`${w.word}`)
+        label = `${translations[w.word].toLowerCase()}`
+        labels.push(label)
+        if (places.includes(w.word)) {
+            places.push(label)
+        }
         // labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
     })
+    function runTSNE(dists) {
+        var opt = {}
+        opt.epsilon = 10; // epsilon is learning rate (10 = default)
+        opt.perplexity = 7; // roughly how many neighbors each point influences (30 = default)
+        opt.dim = 2; // dimensionality of the embedding (2 = default)
 
-    console.log('calculating PCA...')
-    var vectors = PCA.getEigenVectors(startvectors);
-    var adData = PCA.computeAdjustedData(startvectors, vectors[0], vectors[1])
-    var betterData = adData.formattedAdjustedData
+        var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
 
-    if (false) {
-        // cosine sim
-        var wordSet = new Set()
-        var vecObj = new Object()
-        result.forEach(function (elt) {
-            var wordRoot = elt.word.split('_')[0]
-            var BOA = elt.word.split('_')[1]
-            if (vecObj[wordRoot] == undefined) {
-                vecObj[wordRoot] = new Object()
-            }
-            vecObj[wordRoot][BOA] = elt.vector
-            wordSet.add(wordRoot)
-        })
+        // initialize data. Here we have 3 points and some example pairwise dissimilarities
 
-        console.log('calculating cosim')
-        var cosimList = []
-        wordSet.forEach(function (w) {
-            cosimList.push({ 'word': w, 'cosim': cosinesim(vecObj[w]['Before'], vecObj[w]['After']) })
-        })
-        var sortedCosim = cosimList.sort(function (a, b) { return a.cosim > b.cosim })
-        console.log('sorted cosim list:', sortedCosim)
-        d3.select('#output0').text(sortedCosim.slice(100, 200).map(d => d.word).join(' '))
-        d3.select('#output1').text(sortedCosim.slice(-200, -100).map(d => d.word).join(' '))
+        tsne.initDataDist(dists);
+        console.log('initialized TSNE')
+        for (var k = 0; k < 500; k++) {
+            tsne.step(); // every time you call this, solution gets better
+        }
+
+        var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+
+        return Y
     }
-
+    var betterData = runTSNE(startvectors)
 
     var data = []
     for (var i = 0; i < startvectors.length; i++) {
-        if (betterData[0][i] === undefined) {
+        if (betterData[i][0] === undefined) {
             break;
         }
         data.push({
-            'x': betterData[0][i],
-            'y': betterData[1][i],
+            'x': betterData[i][0],
+            'y': betterData[i][1],
         })
     }
     console.log('length', data.length)
@@ -92,11 +86,11 @@ function drawChart(result) {
         .style("opacity", 0);
 
     var x = d3.scaleLinear()
-        .domain([xMin - .25, xMax + 1.5])
+        .domain([xMin - 1, xMax + 3.5])
         .range([0, width])
 
     var y = d3.scaleLinear()
-        .domain([yMin - .25, yMax + .25])
+        .domain([yMin - 1, yMax + 1])
         .range([height, 0]);
 
     var xAxis = d3.axisBottom(x).ticks(12),
@@ -137,14 +131,14 @@ function drawChart(result) {
         .attr("cx", function (d) { return x(d.x); })
         .attr("cy", function (d) { return y(d.y); })
         .attr("opacity", function (d, i) {
-            return .5;
+            return opacity(i)
         })
         .attr('id', function (d, i) { "circle" + (i + 1) })
         .style("fill", function (d, i) {
-            if (labels[i].includes('Before')) {
+            if (places.includes(labels[i])) {
                 return "red";
             } else {
-                return 'blue'
+                return 'gray'
             }
 
         });
@@ -154,14 +148,23 @@ function drawChart(result) {
         .attr("x", function (d) { return x(d.x) + 7; })
         .attr("y", function (d) { return y(d.y) + 7; })
         .attr('id', function (d, i) { "label" + (i + 1) })
-        .attr('opacity', .75)
+        .attr('opacity', function (d, i) {
+            return opacity(i)
+        })
         .text(function (d, i) { return labels[i] })
 
+    function opacity(i) {
+        if (places.includes(labels[i])) {
+            return .85
+        } else {
+            return .25
+        }
+    }
 
     // var linedata = data.map(function(d) {
     //     return {'x1' : }
     // })
-    var lines = true
+    var lines = false
     if (lines) {
         var lineObj = new Object()
         node.each(function (d) {
@@ -246,8 +249,8 @@ function drawChart(result) {
         var s = d3.event.selection;
         if (!s) {
             if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
-            x.domain([xMin - .25, xMax + 1.5])
-            y.domain([yMin - .25, yMax + .25])
+            x.domain([xMin - 1, xMax + 3.5])
+            y.domain([yMin - 1, yMax + 1])
         } else {
 
             x.domain([s[0][0], s[1][0]].map(x.invert, x));
@@ -300,34 +303,51 @@ function drawChart(result) {
 }
 
 $(document).ready(function () {
-    d3.json('categories.json').then(function (cats) {
-        d3.json("../../files2big/before-after-average-BERT.json").then(function (result) {
-            result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
-            var relevantWords = []
-            Object.keys(cats).forEach(function(c) {
-                cats[c].forEach(function(w) {
-                    relevantWords.push(w)
-                })
-            })
-            result = result.filter(d => relevantWords.includes(d.word.split('_')[0]))
-            console.log('result length:',result.length)
-            drawChart(result)
-            // result = result.filter(d => d.word.includes('After'))
-            // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
-            // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
+    d3.json('translationsBERT.json').then(function (translations) {
+        d3.json('sortedConnections.json').then(function (connects) {
+            d3.json('places.json').then(function (places) {
+                d3.json('lemmaCounter.json').then(function (lemmaCounter) {
+                    d3.json("../../files2big/all-BERT.json").then(function (result) {
+                        // var relevantWords = []
+                        // Object.keys(cats).forEach(function(c) {
+                        //     cats[c].forEach(function(w) {
+                        //         relevantWords.push(w)
+                        //     })
+                        // })
+                        // result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
+
+                        // var theseWords = ['бумага', 'разговор', 'зуб', 'поэт', 'народ', 'граница', 'сложный', 'песня', 'общий', 'страна', 'берег', 'сторона', 'корень', 'знак', 'звук', 'рука', 'ребёнок', 'предмет', 'лодка', 'слово', 'крик', 'говорить', 'речь', 'губа', 'корабль', 'враг', 'книга', 'стих', 'кожа', 'кость', 'лист', 'земля', 'русский', 'голос', 'взгляд', 'язык', 'дух']
+                        var theseWords = connects.filter(c => c.ct > 1).map(d => d.word)
+                        theseWords = theseWords.filter(d => lemmaCounter[d] > 24)
+                        console.log('theseworsd',theseWords.length)
+                        var data = []
+                        Object.keys(result).forEach(function (w) {
+                            data.push({
+                                'word': w,
+                                'vector': result[w]['After']
+                            })
+                        })
+                        // enough connects, including all place names
+                        var enoughPlaces = places.filter(p => lemmaCounter[p] > 9)
+                        console.log(enoughPlaces)
+                        data = data.filter(d => theseWords.includes(d.word) || enoughPlaces.includes(d.word))
+                        console.log(data)
+                        console.log('result length:', data.length)
+                        drawChart(data, places, translations)
+                        // result = result.filter(d => d.word.includes('After'))
+                        // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
+                        // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
 
 
 
-            // d3.csv("notableWords.csv", function (data) {
-            //     var changedWords = data.different.trim().split(' ')
-            //     var sameWords = data.same.trim().split(' ')
-            //     result = result.filter(d => changedWords.includes(d.word.split('_')[0]))
-            //     drawChart(result)
-            // })
-        })
 
-    })
-});
+                        // d3.csv("notableWords.csv", function (data) {
+                        //     var changedWords = data.different.trim().split(' ')
+                        //     var sameWords = data.same.trim().split(' ')
+                        //     result = result.filter(d => changedWords.includes(d.word.split('_')[0]))
+                        //     drawChart(result)
+                        // })
+
 
     // function getRandomSubarray(arr, size) {
     //     var shuffled = arr.slice(0), i = arr.length, temp, index;
@@ -339,3 +359,38 @@ $(document).ready(function () {
     //     }
     //     return shuffled.slice(0, size);
     // }
+    // console.log('calculating PCA...')
+    // var vectors = PCA.getEigenVectors(startvectors);
+    // var adData = PCA.computeAdjustedData(startvectors, vectors[0], vectors[1])
+    // var betterData = adData.formattedAdjustedData
+
+    // if (false) {
+    //     // cosine sim
+    //     var wordSet = new Set()
+    //     var vecObj = new Object()
+    //     result.forEach(function (elt) {
+    //         var wordRoot = elt.word.split('_')[0]
+    //         var BOA = elt.word.split('_')[1]
+    //         if (vecObj[wordRoot] == undefined) {
+    //             vecObj[wordRoot] = new Object()
+    //         }
+    //         vecObj[wordRoot][BOA] = elt.vector
+    //         wordSet.add(wordRoot)
+    //     })
+
+    //     console.log('calculating cosim')
+    //     var cosimList = []
+    //     wordSet.forEach(function (w) {
+    //         cosimList.push({ 'word': w, 'cosim': cosinesim(vecObj[w]['Before'], vecObj[w]['After']) })
+    //     })
+    //     var sortedCosim = cosimList.sort(function (a, b) { return a.cosim > b.cosim })
+    //     console.log('sorted cosim list:', sortedCosim)
+    //     d3.select('#output0').text(sortedCosim.slice(100, 200).map(d => d.word).join(' '))
+    //     d3.select('#output1').text(sortedCosim.slice(-200, -100).map(d => d.word).join(' '))
+    // }
+                    })
+                })
+            })
+        })
+    })
+});
