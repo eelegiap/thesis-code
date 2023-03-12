@@ -33,6 +33,7 @@ function drawChart(result, iod) {
         // labels.push(`${elt.word}`)
         labels.push(`${elt.translatedword.toLowerCase()}`)
         // labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
+        //  labels.push(`${elt.translatedword.toLowerCase()} (${elt.word})`)
     })
 
     // var vectors = PCA.getEigenVectors(startvectorsbert);
@@ -152,7 +153,12 @@ function drawChart(result, iod) {
         })
         .attr('id', function (d, i) { "circle" + (i + 1) })
         .style("fill", function (d, i) {
-            return "#4292c6";
+            if (iod == 'increase') {
+                return "#50C878";
+            } else {
+                return 'tomato'
+            }
+            
         });
 
     label = node

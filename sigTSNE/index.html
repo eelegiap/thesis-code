@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Significant Individual Change Plot</title>
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest"> -->
+
+    <!-- Load CSS libraries -->
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+    <!-- MDB -->
+    <!-- <link rel="stylesheet" href="mdb5/css/mdb.min.css" /> -->
+
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+
+    <style>
+        .gray {
+            color: gray;
+        }
+
+        .bold {
+            font-weight: bold
+        }
+
+        .loading span {
+            display: inline-block
+        }
+
+        span {
+            display: block;
+        }
+
+        svg {
+            display: inline-block
+        }
+
+        #output1 p {
+            font-weight: bold;
+        }
+
+        .table-row {
+            height: 550px;
+            overflow: auto
+        }
+
+        .hide {
+            display: none
+        }
+
+        #zoombutton {
+            background-color: #e4e4e4;
+            border-radius: 10;
+            display: inline-block;
+            cursor: pointer;
+            transform: translateX(50)
+        }
+    </style>
+
+    <!-- <script src="{% static 'js/src/lib/api.js' %}"></script>
+    <script src="{% static 'js/src/navec.js' %}"></script>
+    <script src="{% static 'js/src/lib/d3-simple-slider.js' %}"></script> -->
+    
+    <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js" integrity="sha512-PLXQkW9K9twsr6kg2YomYaGdxSAEWSlr25vmbfxXxnYtDop+CPzidL8IDsQZMNPYF2UgLSLVyUxyAjwyTcMVtQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <!-- <script src='https://cdn.jsdelivr.net/npm/pca-js@1.0.0/pca.min.js'></script> -->
+
+</head>
+
+<body>
+    <div class='container'>
+        <div class='row'>
+            <h2>CoRusPo: t-SNE Graph of Words Experiencing Significant Change</h2>
+        </div>
+        <div class='row'>
+            <h4>
+                All terms shown on the graph experienced a significant change in 
+                poem frequency in the subsets of the corpus from pre-invasion to post-invasion.
+                Graphs aid in identifying trends in the change of word frequency over time in the corpus. 
+            </h4>
+            <h4>The process for calculating these vectors is:</h4>
+            <ol>
+                <li>For each word in the corpus, calculate its frequency in each subset (pre- and post-invasion)</li>
+                <li>Run two-sample two-tailed T-test on frequency values to find word with sig. freq. changes</li>
+                <li>Convert these "significant" words to high-dim Russian word-embedding vectors</li>
+                <li>Project these embedding vectors to 2-dim using t-SNE and plot here by part of speech.</li>
+            </ol>
+            
+            <hr>
+            <h3 id='graph-title' class='hide'></h3>
+            <div>
+                <div id='ioddropdown'></div>
+                <div id='dropdown'></div>
+            </div>
+            <div id='graph'></div>
+            <p id='graph-descript' class=hide></p>
+    
+        </div>
+    </div>
+    <script src="../tsne.js"></script>
+    <script src="sim.js"></script>
+</body>
+

@@ -1,4 +1,4 @@
-function drawChart(result, places, translations) {
+function drawChart(result, translations) {
 
     // $('#output0').empty();
     // $('#output1').empty();
@@ -29,17 +29,18 @@ function drawChart(result, places, translations) {
     result.forEach(function (w) {
         startvectors.push(w.vector)
         // labels.push(`${w.word}`)
-        label = `${translations[w.word].toLowerCase()}`
+        // label = `${translations[w.word].toLowerCase()}`
+        label = `${w.word} ${translations[w.word.split('_')[0]].toLowerCase()}`
         labels.push(label)
         if (places.includes(w.word)) {
             places.push(label)
         }
-        // labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
+        labels.push()
     })
     function runTSNE(dists) {
         var opt = {}
         opt.epsilon = 10; // epsilon is learning rate (10 = default)
-        opt.perplexity = 7; // roughly how many neighbors each point influences (30 = default)
+        opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
         opt.dim = 2; // dimensionality of the embedding (2 = default)
 
         var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
@@ -135,11 +136,7 @@ function drawChart(result, places, translations) {
         })
         .attr('id', function (d, i) { "circle" + (i + 1) })
         .style("fill", function (d, i) {
-            if (places.includes(labels[i])) {
-                return "red";
-            } else {
-                return 'gray'
-            }
+            return 'lightblue'
 
         });
 
@@ -154,6 +151,7 @@ function drawChart(result, places, translations) {
         .text(function (d, i) { return labels[i] })
 
     function opacity(i) {
+        return .75
         if (places.includes(labels[i])) {
             return .85
         } else {
@@ -304,8 +302,6 @@ function drawChart(result, places, translations) {
 
 $(document).ready(function () {
     d3.json('translationsBERT.json').then(function (translations) {
-        d3.json('sortedConnections.json').then(function (connects) {
-            d3.json('places.json').then(function (places) {
                 d3.json('lemmaCounter.json').then(function (lemmaCounter) {
                     d3.json("../../files2big/all-BERT.json").then(function (result) {
                         // var relevantWords = []
@@ -317,23 +313,25 @@ $(document).ready(function () {
                         // result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
 
                         // var theseWords = ['бумага', 'разговор', 'зуб', 'поэт', 'народ', 'граница', 'сложный', 'песня', 'общий', 'страна', 'берег', 'сторона', 'корень', 'знак', 'звук', 'рука', 'ребёнок', 'предмет', 'лодка', 'слово', 'крик', 'говорить', 'речь', 'губа', 'корабль', 'враг', 'книга', 'стих', 'кожа', 'кость', 'лист', 'земля', 'русский', 'голос', 'взгляд', 'язык', 'дух']
-                        var theseWords = connects.filter(c => c.ct > 1).map(d => d.word)
-                        theseWords = theseWords.filter(d => lemmaCounter[d] > 24)
+                        // var theseWords = connects.filter(c => c.ct > 1).map(d => d.word)
+                        var theseWords = ['жертва','враг','друг','насильник','родный','предатель','предательный','русский','язык']
+                        // theseWords = theseWords.filter(d => lemmaCounter[d] > 4)
                         console.log('theseworsd',theseWords.length)
                         var data = []
                         Object.keys(result).forEach(function (w) {
                             data.push({
-                                'word': w,
+                                'word': w+'_After',
                                 'vector': result[w]['After']
                             })
+                            data.push({
+                                'word': w+'_Before',
+                                'vector': result[w]['Before']
+                            })
                         })
-                        // enough connects, including all place names
-                        var enoughPlaces = places.filter(p => lemmaCounter[p] > 9)
-                        console.log(enoughPlaces)
-                        data = data.filter(d => theseWords.includes(d.word) || enoughPlaces.includes(d.word))
+                        data = data.filter(d => theseWords.includes(d.word.split('_')[0]))
                         console.log(data)
                         console.log('result length:', data.length)
-                        drawChart(data, places, translations)
+                        drawChart(data, translations)
                         // result = result.filter(d => d.word.includes('After'))
                         // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
                         // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
@@ -391,6 +389,4 @@ $(document).ready(function () {
                     })
                 })
             })
-        })
-    })
 });

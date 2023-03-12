@@ -35889,34 +35889,6 @@
         }
     },
     {
-        "keyword": "журнал",
-        "pos": "NOUN",
-        "info": {
-            "Before": 0.03431667670078266,
-            "After": 0.003843689942344651,
-            "BeforeCt": 57,
-            "AfterCt": 6,
-            "countryInfo": {
-                "Before": {
-                    "Russia": 34,
-                    "Kazakhstan": 7,
-                    "Ukraine": 6,
-                    "N/A": 9,
-                    "Moldova": 1
-                },
-                "After": {
-                    "Russia": 4,
-                    "Kazakhstan": 1,
-                    "Ukraine": 1
-                }
-            },
-            "stats": {
-                "statistic": 6.2795308641913365,
-                "pvalue": 3.851087563717352e-10
-            }
-        }
-    },
-    {
         "keyword": "воля",
         "pos": "NOUN",
         "info": {
