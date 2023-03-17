@@ -1,4 +1,4 @@
-function drawChart(result, translations) {
+function drawChart(result, places, translations) {
 
     // $('#output0').empty();
     // $('#output1').empty();
@@ -28,19 +28,21 @@ function drawChart(result, translations) {
     console.log('result length:', result.length)
     result.forEach(function (w) {
         startvectors.push(w.vector)
-        // labels.push(`${w.word}`)
+        // labels.push(`${w.lemma}`)
         // label = `${translations[w.word].toLowerCase()}`
-        label = `${w.word} ${translations[w.word.split('_')[0]].toLowerCase()}`
+        // label = `${w.word} ${translations[w.word.split('_')[0]].toLowerCase()}`
+        var label = `${w.lemma}`
         labels.push(label)
-        if (places.includes(w.word)) {
+        // if (places) {
+        if (places.includes(w.lemma)) {
             places.push(label)
         }
-        labels.push()
+        // }
     })
     function runTSNE(dists) {
         var opt = {}
         opt.epsilon = 10; // epsilon is learning rate (10 = default)
-        opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
+        opt.perplexity = 5; // roughly how many neighbors each point influences (30 = default)
         opt.dim = 2; // dimensionality of the embedding (2 = default)
 
         var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
@@ -87,7 +89,7 @@ function drawChart(result, translations) {
         .style("opacity", 0);
 
     var x = d3.scaleLinear()
-        .domain([xMin - 1, xMax + 3.5])
+        .domain([xMin - 1, xMax + 5])
         .range([0, width])
 
     var y = d3.scaleLinear()
@@ -136,6 +138,11 @@ function drawChart(result, translations) {
         })
         .attr('id', function (d, i) { "circle" + (i + 1) })
         .style("fill", function (d, i) {
+            if (places.includes(labels[i])) {
+                return 'tomato'
+            } else {
+                return 'lightblue'
+            }
             return 'lightblue'
 
         });
@@ -151,7 +158,6 @@ function drawChart(result, translations) {
         .text(function (d, i) { return labels[i] })
 
     function opacity(i) {
-        return .75
         if (places.includes(labels[i])) {
             return .85
         } else {
@@ -247,7 +253,7 @@ function drawChart(result, translations) {
         var s = d3.event.selection;
         if (!s) {
             if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay);
-            x.domain([xMin - 1, xMax + 3.5])
+            x.domain([xMin - 1, xMax + 5])
             y.domain([yMin - 1, yMax + 1])
         } else {
 
@@ -314,24 +320,28 @@ $(document).ready(function () {
 
                         // var theseWords = ['бумага', 'разговор', 'зуб', 'поэт', 'народ', 'граница', 'сложный', 'песня', 'общий', 'страна', 'берег', 'сторона', 'корень', 'знак', 'звук', 'рука', 'ребёнок', 'предмет', 'лодка', 'слово', 'крик', 'говорить', 'речь', 'губа', 'корабль', 'враг', 'книга', 'стих', 'кожа', 'кость', 'лист', 'земля', 'русский', 'голос', 'взгляд', 'язык', 'дух']
                         // var theseWords = connects.filter(c => c.ct > 1).map(d => d.word)
-                        var theseWords = ['жертва','враг','друг','насильник','родный','предатель','предательный','русский','язык']
+                        // var theseWords = ['жертва','враг','друг','насильник','родный','предатель','предательный','русский','язык']
                         // theseWords = theseWords.filter(d => lemmaCounter[d] > 4)
+                        var theseWords = ['крым', 'мариуполь', 'харьков', 'киев', 'буча', 'винница', 'одесса', 'запорожье', 'херсон', 'николаев', 'лисичанск', 'мелитополь', 'северодонецк', 'полтава', 'донецк', 'днепр', 'чернигов', 'львов', 'сумы', 'ирпень', 'гостомель', 'керчь', 'кременчуг', 'кропивницкий', 'славянск', 'черновцы', 'харків', 'київ', 'краматорск', 'луганск', 'бердянск', 'житомир', 'горловка', 'луцк', 'никополь', 'киевская', 'закарпатье']
                         console.log('theseworsd',theseWords.length)
                         var data = []
                         Object.keys(result).forEach(function (w) {
                             data.push({
                                 'word': w+'_After',
+                                'lemma' : w,
                                 'vector': result[w]['After']
                             })
-                            data.push({
-                                'word': w+'_Before',
-                                'vector': result[w]['Before']
-                            })
+                            // data.push({
+                            //     'word': w+'_Before',
+                            //     'vector': result[w]['Before']
+                            // })
                         })
-                        data = data.filter(d => theseWords.includes(d.word.split('_')[0]))
+                        console.log(lemmaCounter['война'])
+                        data = data.filter(d => (theseWords.includes(d.lemma) && lemmaCounter[d.lemma] > 9) || lemmaCounter[d.lemma] > 149)
                         console.log(data)
                         console.log('result length:', data.length)
-                        drawChart(data, translations)
+                        console.log(data)
+                        drawChart(data, theseWords, translations)
                         // result = result.filter(d => d.word.includes('After'))
                         // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
                         // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))

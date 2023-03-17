@@ -1,0 +1,692 @@
+[
+    {
+        "city": "Aktobe",
+        "country": "Kazakhstan",
+        "coordinates": "50.283933, 57.166978"
+    },
+    {
+        "city": "Almaty",
+        "country": "Kazakhstan",
+        "coordinates": "43.238949, 76.889709"
+    },
+    {
+        "city": "Altai",
+        "country": "Russia",
+        "coordinates": "50.603000, 86.253000"
+    },
+    {
+        "city": "Arkhangelsk",
+        "country": "Russia",
+        "coordinates": "64.539304, 40.518735"
+    },
+    {
+        "city": "Astrakhan",
+        "country": "Russia",
+        "coordinates": "46.347869, 48.033574"
+    },
+    {
+        "city": "Babruysk",
+        "country": "Belarus",
+        "coordinates": "53.150000, 29.233333"
+    },
+    {
+        "city": "Baku",
+        "country": "Azerbaijan",
+        "coordinates": "40.409264, 49.867092"
+    },
+    {
+        "city": "Belgorod",
+        "country": "Russia",
+        "coordinates": "50.595660, 36.587223"
+    },
+    {
+        "city": "Bishkek",
+        "country": "Kyrgyzstan",
+        "coordinates": "42.874722, 74.612222"
+    },
+    {
+        "city": "Cheboksary",
+        "country": "Russia",
+        "coordinates": "56.146247, 47.248871"
+    },
+    {
+        "city": "Chelyabinsk",
+        "country": "Russia",
+        "coordinates": "55.159897, 61.402554"
+    },
+    {
+        "city": "Cherepovets",
+        "country": "Russia",
+        "coordinates": "59.126921, 37.909214"
+    },
+    {
+        "city": "Chernihiv",
+        "country": "Ukraine",
+        "coordinates": "51.498200, 31.289350"
+    },
+    {
+        "city": "Chernivtsi",
+        "country": "Ukraine",
+        "coordinates": "48.291683, 25.940340"
+    },
+    {
+        "city": "Chisinau",
+        "country": "Moldova",
+        "coordinates": "47.010453, 28.863810"
+    },
+    {
+        "city": "Chukotka",
+        "country": "Russia",
+        "coordinates": "66.000000, 169.000000"
+    },
+    {
+        "city": "Crimea",
+        "country": "Ukraine",
+        "coordinates": "45.283333, 34.200000"
+    },
+    {
+        "city": "Dagestan",
+        "country": "Russia",
+        "coordinates": "43.000000, 47.000000"
+    },
+    {
+        "city": "Dashoguz",
+        "country": "Turkmenistan",
+        "coordinates": "41.839980, 59.966622"
+    },
+    {
+        "city": "Dnipro",
+        "country": "Ukraine",
+        "coordinates": "48.450000, 34.983333"
+    },
+    {
+        "city": "Donetsk",
+        "country": "Ukraine",
+        "coordinates": "48.015883, 37.802850"
+    },
+    {
+        "city": "Dunbna",
+        "country": "Russia",
+        "coordinates": "54.207000, 37.363000"
+    },
+    {
+        "city": "Dzerzhinsk",
+        "country": "Russia",
+        "coordinates": "56.238377, 43.463066"
+    },
+    {
+        "city": "Elektrostal",
+        "country": "Russia",
+        "coordinates": "55.789583, 38.446709"
+    },
+    {
+        "city": "Fergana",
+        "country": "Uzbekistan",
+        "coordinates": "40.384476, 71.784320"
+    },
+    {
+        "city": "Gatchina",
+        "country": "Russia",
+        "coordinates": "59.570664, 30.133015"
+    },
+    {
+        "city": "Gomel",
+        "country": "Belarus",
+        "coordinates": "52.434500, 30.975400"
+    },
+    {
+        "city": "Gorky",
+        "country": "Russia",
+        "coordinates": "56.328570, 44.002050"
+    },
+    {
+        "city": "Grozny",
+        "country": "Russia",
+        "coordinates": "43.317992, 45.698197"
+    },
+    {
+        "city": "Igarka",
+        "country": "Russia",
+        "coordinates": "67.467103, 86.583365"
+    },
+    {
+        "city": "Irkutsk",
+        "country": "Russia",
+        "coordinates": "52.286387, 104.280660"
+    },
+    {
+        "city": "Ivano-Frankivsk",
+        "country": "Ukraine",
+        "coordinates": "48.922634, 24.711117"
+    },
+    {
+        "city": "Ivanovo",
+        "country": "Russia",
+        "coordinates": "57.000348, 40.973921"
+    },
+    {
+        "city": "Jizzakh",
+        "country": "Uzbekistan",
+        "coordinates": "40.115719, 67.842218"
+    },
+    {
+        "city": "Kalinin",
+        "country": "Russia",
+        "coordinates": "56.859611, 35.911896"
+    },
+    {
+        "city": "Kalmykia",
+        "country": "Russia",
+        "coordinates": "46.250000, 45.000000"
+    },
+    {
+        "city": "Kaluga",
+        "country": "Russia",
+        "coordinates": "54.551858, 36.285097"
+    },
+    {
+        "city": "Kamchatka",
+        "country": "Russia",
+        "coordinates": "56.006250, 160.546875"
+    },
+    {
+        "city": "Karaganda",
+        "country": "Kazakhstan",
+        "coordinates": "49.798306, 73.099227"
+    },
+    {
+        "city": "Karelia",
+        "country": "Russia",
+        "coordinates": "63.000000, 33.000000"
+    },
+    {
+        "city": "Kemorovo",
+        "country": "Russia",
+        "coordinates": "55.392778, 86.046111"
+    },
+    {
+        "city": "Kerch",
+        "country": "Ukraine",
+        "coordinates": "45.360865, 36.467172"
+    },
+    {
+        "city": "Keremovo",
+        "country": "Russia",
+        "coordinates": "55.392778, 86.046111"
+    },
+    {
+        "city": "Khabarovsk",
+        "country": "Russia",
+        "coordinates": "48.502731, 135.066260"
+    },
+    {
+        "city": "Khakassia",
+        "country": "Russia",
+        "coordinates": "53.722222, 91.442222"
+    },
+    {
+        "city": "Khantia-Mansia",
+        "country": "Russia",
+        "coordinates": "61.000000, 69.000000"
+    },
+    {
+        "city": "Kharkiv",
+        "country": "Ukraine",
+        "coordinates": "49.993500, 36.230383"
+    },
+    {
+        "city": "Kherson",
+        "country": "Ukraine",
+        "coordinates": "46.635417, 32.616867"
+    },
+    {
+        "city": "Kirov",
+        "country": "Russia",
+        "coordinates": "58.603532, 49.668314"
+    },
+    {
+        "city": "Klin",
+        "country": "Russia",
+        "coordinates": "56.343063, 36.698731"
+    },
+    {
+        "city": "Komi",
+        "country": "Russia",
+        "coordinates": "63.500000, 54.000000"
+    },
+    {
+        "city": "Krasnodar",
+        "country": "Russia",
+        "coordinates": "45.035470, 38.975313"
+    },
+    {
+        "city": "Krasnoyarsk",
+        "country": "Russia",
+        "coordinates": "56.015283, 92.893248"
+    },
+    {
+        "city": "Kryvyi Rih",
+        "country": "Ukraine",
+        "coordinates": "47.910483, 33.391783"
+    },
+    {
+        "city": "Kursk",
+        "country": "Russia",
+        "coordinates": "51.730361, 36.192647"
+    },
+    {
+        "city": "Kyiv",
+        "country": "Ukraine",
+        "coordinates": "50.450100, 30.523400"
+    },
+    {
+        "city": "Lipetsk",
+        "country": "Russia",
+        "coordinates": "52.610303, 39.594626"
+    },
+    {
+        "city": "Luhansk",
+        "country": "Ukraine",
+        "coordinates": "48.574041, 39.307815"
+    },
+    {
+        "city": "Lviv",
+        "country": "Ukraine",
+        "coordinates": "49.839683, 24.029717"
+    },
+    {
+        "city": "Magadan",
+        "country": "Russia",
+        "coordinates": "59.561796, 150.830141"
+    },
+    {
+        "city": "Mari El",
+        "country": "Russia",
+        "coordinates": "56.630842, 47.886089"
+    },
+    {
+        "city": "Mariupol",
+        "country": "Ukraine",
+        "coordinates": "47.097133, 37.543367"
+    },
+    {
+        "city": "Minsk",
+        "country": "Belarus",
+        "coordinates": "53.900600, 27.559000"
+    },
+    {
+        "city": "Moscow",
+        "country": "Russia",
+        "coordinates": "55.755826, 37.617300"
+    },
+    {
+        "city": "Murmansk",
+        "country": "Russia",
+        "coordinates": "68.958524, 33.082659"
+    },
+    {
+        "city": "Mykolaiv",
+        "country": "Ukraine",
+        "coordinates": "46.975033, 31.994583"
+    },
+    {
+        "city": "Mytishchi",
+        "country": "Russia",
+        "coordinates": "55.910503, 37.736370"
+    },
+    {
+        "city": "N/A",
+        "country": "Kazakhstan",
+        "coordinates": "48.019573, 66.923684"
+    },
+    {
+        "city": "N/A",
+        "country": "Tajikistan",
+        "coordinates": "38.861034, 71.276093"
+    },
+    {
+        "city": "Nizhny Novgorod",
+        "country": "Russia",
+        "coordinates": "56.296504, 43.936059"
+    },
+    {
+        "city": "Nizhny Nozgorod",
+        "country": "Russia",
+        "coordinates": "56.296504, 43.936059"
+    },
+    {
+        "city": "Noginsk",
+        "country": "Russia",
+        "coordinates": "55.854900, 38.441800"
+    },
+    {
+        "city": "North Ossetia–Alania",
+        "country": "Russia",
+        "coordinates": "43.000000, 44.000000"
+    },
+    {
+        "city": "Novocherkassk",
+        "country": "Russia",
+        "coordinates": "47.420506, 40.090585"
+    },
+    {
+        "city": "Novomoskovsk",
+        "country": "Russia",
+        "coordinates": "54.010278, 38.284444"
+    },
+    {
+        "city": "Novosibirsk",
+        "country": "Russia",
+        "coordinates": "55.008353, 82.935733"
+    },
+    {
+        "city": "Odessa",
+        "country": "Ukraine",
+        "coordinates": "46.482526, 30.723310"
+    },
+    {
+        "city": "Omsk",
+        "country": "Russia",
+        "coordinates": "54.988480, 73.324236"
+    },
+    {
+        "city": "Orenburg",
+        "country": "Russia",
+        "coordinates": "51.768199, 55.096955"
+    },
+    {
+        "city": "Oryol",
+        "country": "Russia",
+        "coordinates": "52.970425, 36.063840"
+    },
+    {
+        "city": "Oskemen",
+        "country": "Kazakhstan",
+        "coordinates": "49.964883, 82.605118"
+    },
+    {
+        "city": "Pavlodar",
+        "country": "Kazakhstan",
+        "coordinates": "52.285503, 76.936631"
+    },
+    {
+        "city": "Pavlovsky Posad",
+        "country": "Russia",
+        "coordinates": "55.780671, 38.659215"
+    },
+    {
+        "city": "Penza",
+        "country": "Russia",
+        "coordinates": "53.227060, 45.018316"
+    },
+    {
+        "city": "Perm",
+        "country": "Russia",
+        "coordinates": "58.029681, 56.266792"
+    },
+    {
+        "city": "Pinsk",
+        "country": "Belarus",
+        "coordinates": "52.121977, 26.072913"
+    },
+    {
+        "city": "Pittsburgh",
+        "country": "USA",
+        "coordinates": "40.440625, -79.995886"
+    },
+    {
+        "city": "Podolsk",
+        "country": "Russia",
+        "coordinates": "55.431757, 37.544361"
+    },
+    {
+        "city": "Poltava",
+        "country": "Ukraine",
+        "coordinates": "49.588267, 34.551417"
+    },
+    {
+        "city": "Primorsky",
+        "country": "Russia",
+        "coordinates": "43.100000, 131.900000"
+    },
+    {
+        "city": "Pushchino",
+        "country": "Russia",
+        "coordinates": "54.830849, 37.621350"
+    },
+    {
+        "city": "Razdan",
+        "country": "Armenia",
+        "coordinates": "40.508823, 44.764808"
+    },
+    {
+        "city": "Riga",
+        "country": "Latvia",
+        "coordinates": "56.949649, 24.105186"
+    },
+    {
+        "city": "Riscani",
+        "country": "Moldova",
+        "coordinates": "47.950000, 27.566667"
+    },
+    {
+        "city": "Roshal",
+        "country": "Russia",
+        "coordinates": "55.663942, 39.190614"
+    },
+    {
+        "city": "Rostov-on-Don",
+        "country": "Russia",
+        "coordinates": "47.235714, 39.701505"
+    },
+    {
+        "city": "Ryazan",
+        "country": "Russia",
+        "coordinates": "54.609539, 39.712585"
+    },
+    {
+        "city": "Samara",
+        "country": "Russia",
+        "coordinates": "53.241504, 50.221246"
+    },
+    {
+        "city": "Samarkand",
+        "country": "Uzbekistan",
+        "coordinates": "39.654166, 66.959715"
+    },
+    {
+        "city": "Sarapul",
+        "country": "Russia",
+        "coordinates": "56.479726, 53.786748"
+    },
+    {
+        "city": "Saratov",
+        "country": "Russia",
+        "coordinates": "51.592365, 45.960804"
+    },
+    {
+        "city": "Sevastopol",
+        "country": "Ukraine",
+        "coordinates": "44.616650, 33.525367"
+    },
+    {
+        "city": "Shymkent",
+        "country": "Kazakhstan",
+        "coordinates": "42.300000, 69.600000"
+    },
+    {
+        "city": "Sievierodonetsk",
+        "country": "Ukraine",
+        "coordinates": "48.948200, 38.491666"
+    },
+    {
+        "city": "Simferopol",
+        "country": "Ukraine",
+        "coordinates": "44.952117, 34.102417"
+    },
+    {
+        "city": "Smarhon",
+        "country": "Belarus",
+        "coordinates": "54.478333, 26.738056"
+    },
+    {
+        "city": "Smolensk",
+        "country": "Russia",
+        "coordinates": "54.787728, 32.061767"
+    },
+    {
+        "city": "Sochi",
+        "country": "Russia",
+        "coordinates": "43.602808, 39.734154"
+    },
+    {
+        "city": "St. Petersburg",
+        "country": "Russia",
+        "coordinates": "59.934280, 30.335099"
+    },
+    {
+        "city": "Stavropol",
+        "country": "Russia",
+        "coordinates": "45.043267, 41.969093"
+    },
+    {
+        "city": "Sumgait",
+        "country": "Azerbaijan",
+        "coordinates": "40.589722, 49.668611"
+    },
+    {
+        "city": "Sumy",
+        "country": "Ukraine",
+        "coordinates": "50.907700, 34.798100"
+    },
+    {
+        "city": "Sverdlovsk",
+        "country": "Russia",
+        "coordinates": "56.838011, 60.597465"
+    },
+    {
+        "city": "Tallinn",
+        "country": "Estonia",
+        "coordinates": "59.4370, 24.7536"
+    },
+    {
+        "city": "Tartu",
+        "country": "Estonia",
+        "coordinates": "58.3780, 26.7285"
+    },
+    {
+        "city": "Tashkent",
+        "country": "Uzbekistan",
+        "coordinates": "41.2995, 69.2401"
+    },
+    {
+        "city": "Tatarstan",
+        "country": "Russia",
+        "coordinates": "55.7649, 52.4310"
+    },
+    {
+        "city": "Tblisi",
+        "country": "Georgia",
+        "coordinates": "41.7151, 44.8271"
+    },
+    {
+        "city": "Tehran",
+        "country": "Iran",
+        "coordinates": "35.6892, 51.3890"
+    },
+    {
+        "city": "Tiraspol",
+        "country": "Moldova",
+        "coordinates": "46.8427, 29.6205"
+    },
+    {
+        "city": "Tula",
+        "country": "Russia",
+        "coordinates": "54.1961, 37.6182"
+    },
+    {
+        "city": "Tver",
+        "country": "Russia",
+        "coordinates": "56.8596, 35.9119"
+    },
+    {
+        "city": "Ufa",
+        "country": "Russia",
+        "coordinates": "54.7349, 55.9579"
+    },
+    {
+        "city": "Ulyanovsk",
+        "country": "Russia",
+        "coordinates": "54.3142, 48.4031"
+    },
+    {
+        "city": "Uralsk",
+        "country": "Kazakhstan",
+        "coordinates": "51.2171, 51.3355"
+    },
+    {
+        "city": "Vinnytsia",
+        "country": "Ukraine",
+        "coordinates": "49.2331, 28.4682"
+    },
+    {
+        "city": "Vladimir",
+        "country": "Russia",
+        "coordinates": "56.1446, 40.4179"
+    },
+    {
+        "city": "Vladivostok",
+        "country": "Russia",
+        "coordinates": "43.1164, 131.8824"
+    },
+    {
+        "city": "Vlnius",
+        "country": "Lithuania",
+        "coordinates": "54.6892, 25.2798"
+    },
+    {
+        "city": "Vologda",
+        "country": "Russia",
+        "coordinates": "59.2205, 39.8886"
+    },
+    {
+        "city": "Voronezh",
+        "country": "Russia",
+        "coordinates": "51.6615, 39.2003"
+    },
+    {
+        "city": "Voru",
+        "country": "Estonia",
+        "coordinates": "57.8466, 27.0371"
+    },
+    {
+        "city": "Votkinsk",
+        "country": "Russia",
+        "coordinates": "57.0518, 53.9873"
+    },
+    {
+        "city": "Yakutia",
+        "country": "Russia",
+        "coordinates": "62.0355, 129.6759"
+    },
+    {
+        "city": "Yaroslavl",
+        "country": "Russia",
+        "coordinates": "57.6261, 39.8938"
+    },
+    {
+        "city": "Yaroslavl",
+        "country": "Russia",
+        "coordinates": "57.6261, 39.8845"
+    },
+    {
+        "city": "Yekaterinburg",
+        "country": "Russia",
+        "coordinates": "56.8389, 60.6057"
+    },
+    {
+        "city": "Zaporizhzhia",
+        "country": "Ukraine",
+        "coordinates": "47.8388, 35.1396"
+    }
+]

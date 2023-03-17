@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Birth Cities Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" integrity="sha512-k6qg7Y5i5dIJxSx9MZlRIk90Z0ik4jb54blMJ4GOF8Wz94A7wzrLr0C+sAsiZ44MDtQWfYPy40b95M0IBFyHyw==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3"></script>
+    <style>
+        #map {
+            height: 900px;
+            width: 100%;
+        }
+
+        .leaflet-tooltip {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 3px;
+            padding: 1px;
+        }
+
+        .author-tooltip {
+            white-space: pre-wrap;
+            /* wrap text and preserve line breaks */
+            max-width: 500px;
+            min-width: 500px;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+
+        // Initialize the map
+        const map = L.map('map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        d3.json('coords.json').then(coords => {
+            // Fetch the data
+            var place2coords = new Object()
+            coords.map(function (d) {
+                place2coords[`${d.city.trim()}, ${d.country.trim()}`] = d.coordinates.split(', ').map(d => +d)
+            })
+            // Object.values(place2coords).forEach(function(c) {
+            //     console.log(typeof(c[0]))
+            // })
+            d3.json("../notebooks/Thesis_Authors16.json").then(data => {
+                data = data.filter(d => Object.keys(place2coords).includes(`${d.City.trim()}, ${d.Country.trim()}`))
+                // Aggregate the authors per city
+                const cityAuthors = {};
+                data.forEach(author => {
+                    const key = `${author.City.trim()}, ${author.Country.trim()}`;
+                    if (!cityAuthors[key]) {
+                        cityAuthors[key] = {
+                            city: author.City,
+                            country: author.Country,
+                            authors: []
+                        };
+                    }
+                    cityAuthors[key].authors.push(author.Author);
+                });
+                const countries = ['Russia', 'Ukraine', 'Kazakhstan', 'Belarus', 'Uzbekistan',
+                    'Latvia', 'Moldova', 'Estonia', 'Kyrgyzstan', 'Azerbaijan',
+                    'Tajikistan', 'USA', 'Turkmenistan', 'Armenia', 'Iran', 'Georgia',
+                    'Lithuania']
+                function color(cty) {
+                    if (d3.schemeCategory10[countries.indexOf(cty)]) {
+                        return d3.schemeCategory10[countries.indexOf(cty)]
+                    } else {
+                        return 'black'
+                    }
+                }
+                // Get the coordinates for each city and add circles and tooltips to the map
+                const geocodePromises = Object.values(cityAuthors).map(async cityData => {
+                    const { city, country, authors } = cityData;
+                    const coords = place2coords[`${city}, ${country}`];
+                    if (coords) {
+                        const circle = L.circle(coords, {
+                            color: color(`${country}`),
+                            fillColor: color(`${country}`),
+                            fillOpacity: 0.5,
+                            radius: Math.sqrt(authors.length) * 30000
+                        }).addTo(map);
+                        // Add a tooltip with the author names
+                        circle.bindTooltip(`<b>${city}, ${country}</b><br>` + authors.join(', '), {
+                            direction: 'bottom', // position the tooltip above the circle
+                            offset: [0, 20], // adjust the position of the tooltip
+                            className: 'author-tooltip'
+                        });
+                        // Add a click event listener to the circle to show the popup with the city and country name
+                        circle.on('click', function () {
+                            L.popup({
+                                keepInView: true, // keep the popup in view when it opens
+                                closeButton: true, // show the popup's close button
+                                maxWidth: '300' // set the maximum width of the popup to the width of its content
+                            })
+                                .setLatLng(this.getLatLng())
+                                .setContent(`${city}, ${country}`)
+                                .openOn(map);
+                        });
+                        // Wait for the circle to be added to the map before accessing its properties
+                        await circle.on('add', () => {
+                            const latlng = circle._latlng;
+                            console.log(latlng);
+                        });
+                    } else {
+                        console.log(`Invalid coordinates for ${city}, ${country}`);
+                    }
+                });
+                // Wait for all geocode requests to complete
+                Promise.all(geocodePromises).then(() => {
+                    console.log("All cities added to the map.");
+                });
+
+                
+            });
+        })
+    </script>
+</body>
+
+</html>

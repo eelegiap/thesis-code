@@ -1,3 +1,4 @@
+var together = true
 var margin = { top: 80, right: 80, bottom: 10, left: 100 },
   width = 800,
   height = 800;
@@ -9,6 +10,7 @@ var tooltip = d3.select("body").append("div")
 
 var x = d3.scaleBand().range([0, width]),
   z = d3.scaleLinear().domain([0, 4]).clamp(true),
+  t = d3.scaleLinear().domain([-4, 7]).clamp(true),
   c = d3.scaleOrdinal(d3.schemeCategory10);
 
 var svg = d3.select("#matrix")
@@ -40,7 +42,13 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
     // var keywords = ['совесть','стыд','зло','страх','боль','мир','смерть','язык','надежда',
     // 'честь','ложь','предмет','память','воспонимание','шум','опыт','письмо','природа','тишина','свет','новость','лента']
     // var keywords = ['ненависть','ненавидеть','любить','любовь','зло','добро','жизнь','смерть'] for big feelings
-    var keywords = ['ненависть','ненавидеть','любить','любовь','зло','добро','жизнь','смерть','тьма','свет','живой','смертный']
+    // var keywords = ['ненависть','ненавидеть','любить','любовь','зло','добро','жизнь','смерть','тьма','свет','живой','смертный']
+    // var keywords = ['прошлое','будущее','настоящее','память','опыт','воспоминание','история']
+    // var keywords = ['мариуполь', 'харьков', 'киев', 'буча', 'винница', 'одесса', 'запорожье', 'херсон', 'николаев', 'лисичанск', 'мелитополь', 'северодонецк', 'полтава', 'донецк', 'днепр', 'чернигов', 'львов', 'сумы', 'ирпень', 'гостомель', 'керчь', 'кременчуг', 'кропивницкий', 'славянск', 'черновцы', 'харків', 'київ', 'краматорск', 'луганск', 'бердянск', 'житомир', 'горловка', 'луцк', 'никополь', 'киевская', 'закарпатье']
+    // var keywords = ['подняться', 'смотреть', 'смерть', 'крым', 'человек', 'слово', 'бабушка', 'чернигов', 'писать', 'голос', 'пепел', 'тоска', 'фотография', 'собака', 'москва', 'ад', 'железный', 'остаться', 'звук', 'кровь', 'вспоминать', 'молчать', 'старый', 'подвал', 'россия', 'война', 'превратиться', 'дать', 'киев', 'крылатый', 'гореть', 'земля', 'идти', 'город', 'жилой', 'вернуться', 'винница', 'синий', 'ответить', 'начинать', 'улица', 'сделать', 'глаз', 'любовь', 'окно', 'дело', 'днепр', 'одесса', 'проклятие', 'убить', 'квартал', 'свет', 'обстрел', 'пёс', 'путь', 'представить', 'страшный', 'год', 'море', 'львов', 'точка', 'ракета', 'буча', 'лицо', 'мариуполь', 'ребёнок', 'знать', 'отбить', 'сказать', 'танк', 'украина', 'херсон', 'сон', 'сегодня', 'новый', 'нога', 'донбасс', 'счастие', 'ждать', 'лететь', 'вода', 'видеть', 'последний', 'название', 'кадр', 'поверить', 'туман', 'ночь', 'ни', 'небо', 'сума', 'память', 'град', 'чёрный', 'парад', 'друг', 'ирпень', 'живой', 'харьков']
+    var keywords = ['киев', 'крылатый', 'как', 'наш', 'там', 'новый', 'донбасс', 'смерть', 'крым', 'жилой', 'будет', 'винница', 'год', 'что', 'чернигов', 'мой', 'вода', 'львов', 'весь', 'еще', 'уже', 'нет', 'пепел', 'ракета', 'последний', 'буча', 'это', 'так', 'лицо', 'глаз', 'москва', 'мариуполь', 'ребёнок', 'вспоминать', 'под', 'чтобы', 'танк', 'война', 'ирпень', 'харьков', 'квартал', 'вот']
+    var cities = ['донецьк', 'краматорск', 'стаханов', 'чернигов', 'тернопіль', 'дніпро', 'київщина', 'чернігівщина', 'одесщина', 'енакиево', 'миколаївщина', 'киевская', 'волынская', 'чернигов', 'кадиевка', 'вінниччина', 'симферополь', 'житомир', 'мариуполь', 'киевщина', 'черниговская', 'закарпатская', 'закарпаття', 'славянск', 'ивано-франковская', 'донбас винница', 'херсон', 'ровненская', 'николаевщина', 'житомирская', 'буча', 'тернопільщина', 'харків', 'донецкая', 'черниговщина', 'одесса', 'хмельницкий', 'закарпатье', 'донецк', 'донеччина', 'каменец-подольский', 'никополь', 'харківщина', 'николаев', 'кропивницький', 'житомирщина', 'дніпропетровщина', 'северодонецк', 'луганськ', 'волинщина', 'хмельницкая', 'хмельниччина', 'сумщина', 'кіровоградщина', 'одеса', 'винница', 'горловка', 'николаевская', 'черкассы', 'днепропетровская', 'луганск', 'львов', 'одещина', 'ровненщина', 'луцьк', 'луганщина', 'александрия', 'житомир', 'сумы', 'ужгород', 'винницкая', 'кременчуг', 'днепр', 'красный луч', 'черкасская', 'херсонщина', 'волынщина', 'львовская', 'белая церковь', 'лисичанск', 'львовщина', 'макеевка', 'донетчина', 'крым', 'запорожская', 'чернігів', 'ирпень', 'черкасщина', 'полтава', 'запорожье', 'кировоградщина', 'евпатория', 'луцк', 'бердянск', 'івано-франківщина', 'харьковщина', 'харьков', 'гостомель', 'тернополь', 'хмельницький', 'киев', 'івано-франківськ', 'кировоградская', 'сумская', 'павлоград', 'полтавская', 'тернопольская', 'запоріжжя', 'днепропетровщина', 'керчь', 'виннитчина', 'тернопольщина', 'черкаси', 'київ', 'одесская', 'константиновка', 'черкащина', 'полтавщина', 'кривой рог', 'ивано-франковск', 'львів', 'вінниця', 'черновцы', 'херсонская', 'ивано-франковщина', 'кропивницкий', 'миколаїв', 'севастополь', 'суми', 'каменское', 'рівненщина', 'мелитополь', 'рівне', 'хмельнитчина', 'львівщина', 'луганская', 'алчевск', 'бровары', 'харьковская', 'донбасс']
+
     var keywordIDs = []
     jsondata.nodes.forEach(function (d, i) {
       if (keywords.includes(d.id)) {
@@ -52,14 +60,14 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
     var posDict = new Object()
     jsondata.nodes.map(function (d, i) { posDict[i] = d.pos })
 
-    var thresh = 4
+    var thresh = 2
     // var acceptablePOS = ['NOUN','ADJ','VERB']
     var acceptablePOS = ['NOUN', 'ADP', 'PROPN', 'ADJ', 'DET', 'SCONJ', 'VERB', 'ADV', 'PRON', 'CCONJ', 'PART', 'AUX', 'NUM', 'INTJ']
     // var acceptablePOS = ['NOUN',]
     // find those nodes connected to links which have the keyword and have links greater than some amount
     jsondata.links.forEach(function (d) {
       // if (keywordIDs.includes(d.source) || keywordIDs.includes(d.target)) {
-        if (keywordIDs.includes(d.source) && keywordIDs.includes(d.target)) {
+      if (keywordIDs.includes(d.source) && keywordIDs.includes(d.target)) {
         // if (true) {
         if (acceptablePOS.includes(posDict[d.source]) && acceptablePOS.includes(posDict[d.target])) {
           if (d.linkCtBefore > thresh || d.linkCtAfter > thresh) {
@@ -115,6 +123,7 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
 
     console.log(quantile(values, .05), quantile(values, .95))
 
+    var citySources = []
     dataLinks.forEach(function (link, i) {
       matrix[link.source][link.target].z = link.value;
       matrix[link.target][link.source].z = link.value;
@@ -126,6 +135,10 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
       matrix[link.source][link.target]['which'] = link.which
       nodes[link.source].count += link.value;
       nodes[link.target].count += link.value;
+      var datum = dataLinks[i]
+      if (cities.includes(datum.sourceLemma)) {
+        citySources.push(i)
+      }
     });
 
     // Precompute the orders.
@@ -184,13 +197,30 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
         .attr("x", function (d) { return x(d.x); })
         .attr("width", x.bandwidth())
         .attr("height", x.bandwidth())
-        .style("fill-opacity", function (d) { return z(Math.abs(d.z)) })
-        .style("fill", function (d) {
-          // if (nodes[d.x].group == nodes[d.y].group) {
-          if (d.which == 'Before') {
-            return 'tomato'
+        .style("fill-opacity", function (d) { 
+          if (!together) {
+            return z(Math.abs(d.z)) 
           } else {
-            return '#00A36C'
+            return t(d.z)
+          }
+
+        })
+        .style("fill", function (d) {
+          if (!together) {
+            if (d.which == 'Before') {
+              return 'tomato'
+            } else {
+                return '#00A36C'
+            }
+          } else {
+            var datum = dataLinks[d.index]
+            console.log(datum)
+            if (citySources.includes(d.index)) {
+            // if (cities.includes(datum.sourceLemma)) {
+              return '#00A36C'
+            } else {
+            return '#3599dd'
+            }
           }
         })
         .on("mouseover", mouseover)
@@ -201,14 +231,28 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
     function mouseover(p) {
       d3.selectAll(".row text").classed("active", function (d, i) { return i == p.y; });
       d3.selectAll(".column text").classed("active", function (d, i) { return i == p.x; });
-      d3.select(this).transition(100).style('fill', '#3599dd').on("end", revertColor);
+      var hoverFill = 'transparent'
+      if (together) {
+        hoverFill = 'yellow'
+      } else {
+        hoverFill = '#3599dd'
+      }
+      d3.select(this).transition(100).style('fill', hoverFill).on("end", revertColor);
       function revertColor() {
         d3.select(this).transition(800).style("fill", function (d) {
-          // if (nodes[d.x].group == nodes[d.y].group) {
-          if (d.which == 'Before') {
-            return 'tomato'
+          if (!together) {
+            if (d.which == 'Before') {
+              return 'tomato'
+            } else {
+                return '#00A36C'
+            }
           } else {
-            return '#00A36C'
+            var datum = dataLinks[d.index]
+            if (cities.includes(datum.sourceLemma)) {
+              return '#00A36C'
+            } else {
+            return '#3599dd'
+            }
           }
         })
       }
@@ -236,7 +280,6 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
     }
     function click(datum) {
       var d = dataLinks[datum.index]
-      console.log(d)
       var label = `${d.source.id}AND${d.target.id}`
       var labelData = label2lines[label]
       d3.select('#infoBox').html(`<b>Excerpts with ${d.source.id} and ${d.target.id}:</b>`)
