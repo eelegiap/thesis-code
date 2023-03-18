@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legends Example</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .legend-container {
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      justify-content: left;
+      margin-top: 30px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0 20px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-size {
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="color-legend"></div>
+  <div id="size-legend"></div>
+
+  <script>
+    // Set up data for the color legend
+    const countries = ['Russia', 'Ukraine', 'Kazakhstan', 'Belarus', 'Uzbekistan',
+                    'Latvia', 'Moldova', 'Estonia', 'Kyrgyzstan', 'Azerbaijan',
+                    'Tajikistan', 'USA', 'Turkmenistan', 'Armenia', 'Iran', 'Georgia',
+                    'Lithuania']
+                function colorScale(cty) {
+                    if (d3.schemeCategory10[countries.indexOf(cty)]) {
+                        return d3.schemeCategory10[countries.indexOf(cty)]
+                    } else {
+                        return 'black'
+                    }
+                }
+
+    // Set up data for the size legend
+    const sizes = [1, 5, 10, 50, 100];
+
+    // Create the color legend
+    const colorLegend = d3.select("#color-legend")
+      .append("div")
+        .attr("class", "legend-container")
+      .selectAll(".legend-item")
+      .data(countries)
+      .enter().append("div")
+        .attr("class", "legend-item");
+
+    colorLegend.append("div")
+      .attr("class", "legend-color")
+      .style("background-color", d => colorScale(d));
+
+    colorLegend.append("div")
+      .attr("class", "legend-label")
+      .text(d => d);
+
+    // Create the size legend
+    const sizeLegend = d3.select("#size-legend")
+      .append("div")
+        .attr("class", "legend-container")
+      .selectAll(".legend-item")
+      .data(sizes)
+      .enter().append("div")
+        .attr("class", "legend-item");
+
+    sizeLegend.append("div")
+      .attr("class", "legend-size")
+      .style("width", d => `${Math.sqrt(d)*5}px`)
+      .style("height", d => `${Math.sqrt(d)*5}px`)
+      .style('background-color','lightgray')
+      .style('opacity',.5)
+
+    sizeLegend.append("div")
+      .attr("class", "legend-label")
+      .text(d => `${d} Authors`);
+  </script>
+</body>
+</html>

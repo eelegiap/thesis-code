@@ -36,15 +36,15 @@ class TextPanel {
         d3.select('#poemMeta').html(function () {
             var color = 'black'
             if (thisPoem['Before or after'] == 'Before') {
-                color = 'blue'
+                color = '#118ab2'
             } else {
-                color = 'red'
+                color = '#ef476f'
             }
 
             var date = thisPoem['Date posted'] != 'None' ? ` (${parseDate(new Date(thisPoem['Date posted']))})` : ''
 
             return `<span style='color:${color}'>${thisPoem['Before or after']}${date}:</span>
-                    <b>${thisPoem.Author}</b>, <i>${thisPoem.Source}</i>
+                    <b><span id='thisauthor'>${thisPoem.Author}</span></b>, <i>${thisPoem.Source}</i>
                     <br>Author birthplace: ${authorInfo.City}, ${authorInfo.Country}
                     <br>Poem ID: ${thisPoem.UniqueIndex}`
         })

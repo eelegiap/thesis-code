@@ -15,23 +15,37 @@ let input = 'родина'
 function initMainPage(data) {
     let poemData = data[0];
     let authorData = data[1];
-    mySearchResults = new SearchResults(poemData,input,authorData)
     myText = new TextPanel(poemData,authorData);
+    mySearchResults = new SearchResults(poemData,input,authorData)
     const q = window.location.href.split('=')[1]
-    myText.wrangleData(+q)
-    // change_level("wordlevel")
+    // if (q == undefined) {
+        
+    //     updateResults()
+    // } else {
+        myText.wrangleData(+q)
+        updateResults()
+    // }
 }
 
 function updateResults(){
     var input = d3.select('#form1').property('value')
-    console.log(input)
-    mySearchResults.wrangleData(input);
+    var dropdownVal = d3.select('#dropdown').property("value")
+    if (dropdownVal == 'author') {
+        input = d3.select('#thisauthor').text()
+    }
+    d3.select('#form1').property('value',input)
+    mySearchResults.wrangleData(input, dropdownVal);
 }
 
 d3.select('#search').on('click', function() {
     updateResults()
 })
 
+d3.selectAll('#dropdown').on('change', function () {
+    var val = d3.select('#dropdown').property("value")
+    d3.select('#searchLabel').text('Search by '+val)
+    updateResults()
+})
 
 function choose(choices) {
     var index = Math.floor(Math.random() * choices.length);

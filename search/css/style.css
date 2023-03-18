@@ -90,7 +90,7 @@ input,
 }
 
 #search {
-    background-color: lightsteelblue;
+    background-color: #06d6a0;
 }
 
 
@@ -102,3 +102,9 @@ input,
 .border {
     border: 2px solid black;   
 }
+#dropdownP {
+    text-align:left;
+    padding-left:225px
+}
+
+  

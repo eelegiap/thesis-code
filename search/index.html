@@ -44,10 +44,16 @@
 			<div class="col-sm-6" id="searchCol">
 				<div class="row">
 					<!-- <select id="dropdown"></select> -->
+					<p id="dropdownP">Search by: <select id="dropdown">
+						<option value="author">Author</option>
+						<option value="keyword">Keyword</option>
+						<!-- <option value="group">by Cluster</option> -->
+					  </select>
+					</p>
 					<div class="input-group">
 						<div class="form-outline flex-fill searchBar">
 							<input type="search" id="form1" class="form-control form-control-lg" />
-							<label class="form-label" for="form1">Search by keyword(s)</label>
+							<label id='searchLabel' class="form-label" for="form1">Search by author</label>
 						</div>
 						<button type="button" id='search' class="btn searchBar">
 							<i class="fas fa-search"></i>
