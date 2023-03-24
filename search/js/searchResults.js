@@ -13,11 +13,18 @@ class SearchResults {
         const textBox = document.getElementById('form1');
         textBox.focus();
         textBox.select();
-        var dropdownVal = d3.select('#dropdown').property("value")
-        this.wrangleData(this.input, dropdownVal)
+
+        this.wrangleData()
     }
 
-    wrangleData(input, dropdownVal) {
+    wrangleData() {
+        console.log('input at begin',input)
+        var input = d3.select('#form1').property('value')
+        if (input == '' || input == undefined) {
+            input = d3.select('#thisauthor').text()
+        }
+        var dropdownVal = d3.select('#dropdown').property("value")
+        
         let vis = this;
         
         if (dropdownVal == 'keyword') {
@@ -49,11 +56,17 @@ class SearchResults {
             })
             dataByInput = dataByInput.sort((a, b) => a.Author.split(' ')[1] > b.Author.split(' ')[1])
         } else {
+            console.log('input', input)
             var dataByInput = vis.data.filter(function (d) {
                 if (!input) {
                     return false
                 }
-                return d.Author == input
+                if (input.split(' ').length == 1) {
+                    if (d.Author.split(' ').length>1) {
+                    return d.Author.split(' ')[1].toLowerCase().trim() == input.toLowerCase().trim()
+                }
+                }
+                return d.Author.toLowerCase().trim() == input.toLowerCase().trim()
             })
         }
         console.log(dataByInput)

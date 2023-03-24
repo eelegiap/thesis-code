@@ -10,7 +10,7 @@ Promise.all(promises)
     .catch( function (err){console.log(err)} );
 
 
-let input = 'родина'
+let input = ''
 // initMainPage
 function initMainPage(data) {
     let poemData = data[0];
@@ -18,23 +18,12 @@ function initMainPage(data) {
     myText = new TextPanel(poemData,authorData);
     mySearchResults = new SearchResults(poemData,input,authorData)
     const q = window.location.href.split('=')[1]
-    // if (q == undefined) {
-        
-    //     updateResults()
-    // } else {
-        myText.wrangleData(+q)
-        updateResults()
-    // }
+    myText.wrangleData(+q)
+    updateResults()
 }
 
 function updateResults(){
-    var input = d3.select('#form1').property('value')
-    var dropdownVal = d3.select('#dropdown').property("value")
-    if (dropdownVal == 'author') {
-        input = d3.select('#thisauthor').text()
-    }
-    d3.select('#form1').property('value',input)
-    mySearchResults.wrangleData(input, dropdownVal);
+    mySearchResults.wrangleData();
 }
 
 d3.select('#search').on('click', function() {
@@ -44,7 +33,7 @@ d3.select('#search').on('click', function() {
 d3.selectAll('#dropdown').on('change', function () {
     var val = d3.select('#dropdown').property("value")
     d3.select('#searchLabel').text('Search by '+val)
-    updateResults()
+    updateResults('Not specified')
 })
 
 function choose(choices) {

@@ -50,7 +50,7 @@ function drawChart(result, iod) {
     function runTSNE(dists) {
         var opt = {}
         opt.epsilon = 10; // epsilon is learning rate (10 = default)
-        opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
+        opt.perplexity = 25; // roughly how many neighbors each point influences (30 = default)
         opt.dim = 2; // dimensionality of the embedding (2 = default)
 
         var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
@@ -101,7 +101,7 @@ function drawChart(result, iod) {
     var yMin = yvals.reduce(function (a, b) { return Math.min(a, b); });
 
     var margin = { top: 20, right: 10, bottom: 30, left: 30 };
-    width = 1200 - margin.left - margin.right, height = 600 - margin.top - margin.bottom;
+    width = 1200 - margin.left - margin.right, height = 750 - margin.top - margin.bottom;
 
     var tooltip = d3.select("#graph").append("div")
         .attr("class", "tooltip")

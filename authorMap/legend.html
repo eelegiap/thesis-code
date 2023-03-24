@@ -70,7 +70,8 @@
 
     colorLegend.append("div")
       .attr("class", "legend-label")
-      .text(d => d);
+      .text(d => d)
+      .style('color', d => colorScale(d))
 
     // Create the size legend
     const sizeLegend = d3.select("#size-legend")
@@ -80,17 +81,18 @@
       .data(sizes)
       .enter().append("div")
         .attr("class", "legend-item");
-
+        sizeLegend.append("div")
+      .attr("class", "legend-label")
+      .text(d => `${d} Authors`);
+      
     sizeLegend.append("div")
       .attr("class", "legend-size")
       .style("width", d => `${Math.sqrt(d)*5}px`)
       .style("height", d => `${Math.sqrt(d)*5}px`)
-      .style('background-color','lightgray')
+      .style('background-color','darkgray')
       .style('opacity',.5)
 
-    sizeLegend.append("div")
-      .attr("class", "legend-label")
-      .text(d => `${d} Authors`);
+
   </script>
 </body>
 </html>

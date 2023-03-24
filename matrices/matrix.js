@@ -136,7 +136,7 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
       nodes[link.source].count += link.value;
       nodes[link.target].count += link.value;
       var datum = dataLinks[i]
-      if (cities.includes(datum.sourceLemma)) {
+      if (cities.includes(datum.sourceLemma) && cities.includes(datum.targetLemma) ) {
         citySources.push(i)
       }
     });
@@ -217,8 +217,10 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
             console.log(datum)
             if (citySources.includes(d.index)) {
             // if (cities.includes(datum.sourceLemma)) {
-              return '#00A36C'
+              
+              return '#3599dd'
             } else {
+              // return 'darkgray'
             return '#3599dd'
             }
           }
@@ -237,25 +239,25 @@ d3.json("../averageTSNE/categories.json").then(function (cats) {
       } else {
         hoverFill = '#3599dd'
       }
-      d3.select(this).transition(100).style('fill', hoverFill).on("end", revertColor);
-      function revertColor() {
-        d3.select(this).transition(800).style("fill", function (d) {
-          if (!together) {
-            if (d.which == 'Before') {
-              return 'tomato'
-            } else {
-                return '#00A36C'
-            }
-          } else {
-            var datum = dataLinks[d.index]
-            if (cities.includes(datum.sourceLemma)) {
-              return '#00A36C'
-            } else {
-            return '#3599dd'
-            }
-          }
-        })
-      }
+      // d3.select(this).transition(100).style('fill', hoverFill).on("end", revertColor);
+      // function revertColor() {
+      //   d3.select(this).transition(800).style("fill", function (d) {
+      //     if (!together) {
+      //       if (d.which == 'Before') {
+      //         return 'tomato'
+      //       } else {
+      //           return '#00A36C'
+      //       }
+      //     } else {
+      //       var datum = dataLinks[d.index]
+      //       if (cities.includes(datum.sourceLemma)) {
+      //         return '#00A36C'
+      //       } else {
+      //       return '#3599dd'
+      //       }
+      //     }
+      //   })
+      // }
       // tooltip
       var d = dataLinks[p.index]
       var allAuthors = Array.from(new Set(d.authors.Before.concat(d.authors.After)))

@@ -16,6 +16,7 @@ class TextPanel {
     wrangleData(id) {
         let vis = this;
         var thisPoem = this.data.find(d => d.UniqueIndex == id)
+        console.log(thisPoem)
         this.updateVis(thisPoem)
         d3.selectAll('.poemResult').classed('border',false)
         d3.select('#id'+id).classed('border',true)
