@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histogram of Line Lengths</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* Add CSS styles for the histogram bars */
+        .bar {
+            fill: CornflowerBlue ;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        d3.json("lines.json").then(jsondata => {
+            var data = jsondata.lineLengths
+
+    // Calculate the quartiles
+    const q1 = d3.quantile(data, 0.25);
+    const q3 = d3.quantile(data, 0.75);
+    const iqr = q3 - q1;
+    const lowerBound = q1 - 1.5 * iqr;
+    const upperBound = q3 + 1.5 * iqr;
+
+    // Filter out outliers
+    const filtered_lengths = data.filter(d => d >= lowerBound && d <= upperBound);
+
+    const margin = { top: 10, right: 30, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Use linear scale for the x-axis
+    const x = d3.scaleLinear()
+        .domain([d3.min(filtered_lengths), d3.max(filtered_lengths)])
+        .range([0, width]);
+
+    const histogram = d3.histogram()
+        .domain(x.domain())
+        .thresholds(x.ticks(20))(filtered_lengths);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(histogram, d => d.length)])
+        .range([height, 0]);
+
+    svg.selectAll("rect")
+        .data(histogram)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.x0) + 1)
+        .attr("y", d => y(d.length))
+        .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 1))
+        .attr("height", d => height - y(d.length))
+        .attr("fill", "steelblue"); // Use a prettier blue color for the bars
+
+    // Add x-axis with linear scale
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    svg.append("g")
+        .call(d3.axisLeft(y));
+});
+
+
+    </script>
+</body>
+
+</html>

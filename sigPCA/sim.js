@@ -31,9 +31,9 @@ function drawChart(result, iod) {
         startvectorsbert.push(elt.bertvector)
         startvectorsnavec.push(elt.navecvector)
         // labels.push(`${elt.word}`)
-        labels.push(`${elt.translatedword.toLowerCase()}`)
+        // labels.push(`${elt.translatedword.toLowerCase()}`)
         // labels.push(`${elt.word} (${elt.translatedword.toLowerCase()})`)
-        //  labels.push(`${elt.translatedword.toLowerCase()} (${elt.word})`)
+         labels.push(`${elt.translatedword.toLowerCase()} (${elt.word})`)
     })
 
     // var vectors = PCA.getEigenVectors(startvectorsbert);
@@ -98,7 +98,7 @@ function drawChart(result, iod) {
     var yMin = yvals.reduce(function (a, b) { return Math.min(a, b); });
 
     var margin = { top: 20, right: 10, bottom: 30, left: 30 };
-    width = 1000 - margin.left - margin.right, height = 750 - margin.top - margin.bottom;
+    width = $(window).width() - margin.left - margin.right, height = $(window).height() - margin.top - margin.bottom;
 
     var tooltip = d3.select("#graph").append("div")
         .attr("class", "tooltip")

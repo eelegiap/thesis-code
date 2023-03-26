@@ -83,10 +83,19 @@ class SearchResults {
         let vis = this;
         var input = d3.select('#form1').property('value')
         var dropdownVal = d3.select('#dropdown').property("value")
-
+        console.log('thisinput',input)
         d3.selectAll("#results *").remove();
         d3.select('#resultCt').html('')
-        d3.select('#resultCt').html(`${data.length} poems containing ${input}. 
+        var searchSubtitle = ''
+        if (dropdownVal == 'keyword') {
+            searchSubtitle = 'containing'
+        } else {
+            if (input == '') {
+                input = d3.select('#thisauthor').text()
+            }
+            searchSubtitle = 'written by'
+        }
+        d3.select('#resultCt').html(`${data.length} poems ${searchSubtitle} ${input}. 
                 ${data.filter(d => d['Before or after'] == 'Before').length} from before invasion, ${data.filter(d => d['Before or after'] == 'After').length} from after invasion.`)
 
         
