@@ -41,9 +41,16 @@ class TextPanel {
             } else {
                 color = '#ef476f'
             }
-
+            var dateObj = {
+                'No War Poetry' : '~Apr 21, 2022',
+                'ROAR V2' : 'Jun 24, 2022',
+                'ROAR V3' : 'Aug 24, 2022',
+            }
             var date = thisPoem['Date posted'] != 'None' ? ` (${parseDate(new Date(thisPoem['Date posted']))})` : ''
-
+            console.log('date',date)
+            if (date == '') {
+                date = ` (${dateObj[thisPoem.Source]})`
+            }
             return `<span style='color:${color}'>${thisPoem['Before or after']}${date}:</span>
                     <b><span id='thisauthor'>${thisPoem.Author}</span></b>, <i>${thisPoem.Source}</i>
                     <br>Author birthplace: ${authorInfo.City}, ${authorInfo.Country}

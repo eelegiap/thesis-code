@@ -31,7 +31,7 @@ function drawChart(result, places, translations) {
         // labels.push(`${w.lemma}`)
         // label = `${translations[w.word].toLowerCase()}`
         // label = `${w.word} ${translations[w.word.split('_')[0]].toLowerCase()}`
-        var label = `${w.lemma}`
+        var label = `${w.word}`
         labels.push(label)
         // if (places) {
         if (places.includes(w.lemma)) {
@@ -168,10 +168,11 @@ function drawChart(result, places, translations) {
     // var linedata = data.map(function(d) {
     //     return {'x1' : }
     // })
-    var lines = false
+    var lines = true
     if (lines) {
         var lineObj = new Object()
         node.each(function (d) {
+            if (places.includes(d3.select(this).attr('id').split('_')[0])) {
             var wordRoot = d3.select(this).attr('id').split('_')[0]
             var BOA = d3.select(this).attr('id').split('_')[1]
             if (lineObj[wordRoot] == undefined) {
@@ -182,6 +183,7 @@ function drawChart(result, places, translations) {
 
             lineObj[wordRoot][BOA]['x'] = d.x
             lineObj[wordRoot][BOA]['y'] = d.y
+        }
         })
 
         var lineData = []
@@ -308,96 +310,108 @@ function drawChart(result, places, translations) {
 
 $(document).ready(function () {
     d3.json('translationsBERT.json').then(function (translations) {
-                d3.json('lemmaCounter.json').then(function (lemmaCounter) {
-                    d3.json("../../files2big/all-BERT.json").then(function (result) {
-                        // var relevantWords = []
-                        // Object.keys(cats).forEach(function(c) {
-                        //     cats[c].forEach(function(w) {
-                        //         relevantWords.push(w)
-                        //     })
-                        // })
-                        // result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
+        d3.json('lemmaCounter.json').then(function (lemmaCounter) {
+            d3.json("../../files2big/all-BERT.json").then(function (result) {
+                // var relevantWords = []
+                // Object.keys(cats).forEach(function(c) {
+                //     cats[c].forEach(function(w) {
+                //         relevantWords.push(w)
+                //     })
+                // })
+                // result = result.filter(d => d.word.includes('Before') || d.word.includes('After'))
 
-                        // var theseWords = ['бумага', 'разговор', 'зуб', 'поэт', 'народ', 'граница', 'сложный', 'песня', 'общий', 'страна', 'берег', 'сторона', 'корень', 'знак', 'звук', 'рука', 'ребёнок', 'предмет', 'лодка', 'слово', 'крик', 'говорить', 'речь', 'губа', 'корабль', 'враг', 'книга', 'стих', 'кожа', 'кость', 'лист', 'земля', 'русский', 'голос', 'взгляд', 'язык', 'дух']
-                        // var theseWords = connects.filter(c => c.ct > 1).map(d => d.word)
-                        // var theseWords = ['жертва','враг','друг','насильник','родный','предатель','предательный','русский','язык']
-                        // theseWords = theseWords.filter(d => lemmaCounter[d] > 4)
-                        // var theseWords = ['крым', 'мариуполь', 'харьков', 'киев', 'буча', 'винница', 'одесса', 'запорожье', 'херсон', 'николаев', 'лисичанск', 'мелитополь', 'северодонецк', 'полтава', 'донецк', 'днепр', 'чернигов', 'львов', 'сумы', 'ирпень', 'гостомель', 'керчь', 'кременчуг', 'кропивницкий', 'славянск', 'черновцы', 'харків', 'київ', 'краматорск', 'луганск', 'бердянск', 'житомир', 'горловка', 'луцк', 'никополь', 'киевская', 'закарпатье']
-                        var theseWords = ['язык','речь','слово','словарь','говорить','сказать']
-                        console.log('theseworsd',theseWords.length)
-                        var data = []
-                        Object.keys(result).forEach(function (w) {
-                            data.push({
-                                'word': w+'_After',
-                                'lemma' : w,
-                                'vector': result[w]['After']
-                            })
-                            // data.push({
-                            //     'word': w+'_Before',
-                            //     'vector': result[w]['Before']
-                            // })
+                // var theseWords = ['бумага', 'разговор', 'зуб', 'поэт', 'народ', 'граница', 'сложный', 'песня', 'общий', 'страна', 'берег', 'сторона', 'корень', 'знак', 'звук', 'рука', 'ребёнок', 'предмет', 'лодка', 'слово', 'крик', 'говорить', 'речь', 'губа', 'корабль', 'враг', 'книга', 'стих', 'кожа', 'кость', 'лист', 'земля', 'русский', 'голос', 'взгляд', 'язык', 'дух']
+                // var theseWords = connects.filter(c => c.ct > 1).map(d => d.word)
+                // var theseWords = ['жертва','враг','друг','насильник','родный','предатель','предательный','русский','язык']
+                // theseWords = theseWords.filter(d => lemmaCounter[d] > 4)
+                // var theseWords = ['крым', 'мариуполь', 'харьков', 'киев', 'буча', 'винница', 'одесса', 'запорожье', 'херсон', 'николаев', 'лисичанск', 'мелитополь', 'северодонецк', 'полтава', 'донецк', 'днепр', 'чернигов', 'львов', 'сумы', 'ирпень', 'гостомель', 'керчь', 'кременчуг', 'кропивницкий', 'славянск', 'черновцы', 'харків', 'київ', 'краматорск', 'луганск', 'бердянск', 'житомир', 'горловка', 'луцк', 'никополь', 'киевская', 'закарпатье']
+                var theseWords = ['язык', 'речь', 'слово', 'словарь', 'говорить', 'сказать',
+                    'значение', 'смысл', 'разговор','тишина','молчать','замолчать','погорвоить','сказывать',
+                'беседа','беседовать','произношение','произносить','тема','значение','значить']
+                console.log('theseworsd', theseWords.length)
+                var data = []
+                Object.keys(result).forEach(function (w) {
+                    if (theseWords.includes(w)) {
+                        data.push({
+                            'word': w + '_After',
+                            'lemma': w,
+                            'vector': result[w]['After']
                         })
-                        console.log(lemmaCounter['война'])
-                        data = data.filter(d => (theseWords.includes(d.lemma) && lemmaCounter[d.lemma] > 9) || lemmaCounter[d.lemma] > 149)
-                        console.log(data)
-                        console.log('result length:', data.length)
-                        console.log(data)
-                        drawChart(data, theseWords, translations)
-                        // result = result.filter(d => d.word.includes('After'))
-                        // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
-                        // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
+                        data.push({
+                            'word': w+'_Before',
+                            'lemma': w,
+                            'vector': result[w]['Before']
+                        })
+                    } else {
+                        data.push({
+                            'word': w+'_Average',
+                            'lemma': w,
+                            'vector': result[w]['Average']
+                        })
+                    }
 
-
-
-
-                        // d3.csv("notableWords.csv", function (data) {
-                        //     var changedWords = data.different.trim().split(' ')
-                        //     var sameWords = data.same.trim().split(' ')
-                        //     result = result.filter(d => changedWords.includes(d.word.split('_')[0]))
-                        //     drawChart(result)
-                        // })
-
-
-    // function getRandomSubarray(arr, size) {
-    //     var shuffled = arr.slice(0), i = arr.length, temp, index;
-    //     while (i--) {
-    //         index = Math.floor((i + 1) * Math.random());
-    //         temp = shuffled[index];
-    //         shuffled[index] = shuffled[i];
-    //         shuffled[i] = temp;
-    //     }
-    //     return shuffled.slice(0, size);
-    // }
-    // console.log('calculating PCA...')
-    // var vectors = PCA.getEigenVectors(startvectors);
-    // var adData = PCA.computeAdjustedData(startvectors, vectors[0], vectors[1])
-    // var betterData = adData.formattedAdjustedData
-
-    // if (false) {
-    //     // cosine sim
-    //     var wordSet = new Set()
-    //     var vecObj = new Object()
-    //     result.forEach(function (elt) {
-    //         var wordRoot = elt.word.split('_')[0]
-    //         var BOA = elt.word.split('_')[1]
-    //         if (vecObj[wordRoot] == undefined) {
-    //             vecObj[wordRoot] = new Object()
-    //         }
-    //         vecObj[wordRoot][BOA] = elt.vector
-    //         wordSet.add(wordRoot)
-    //     })
-
-    //     console.log('calculating cosim')
-    //     var cosimList = []
-    //     wordSet.forEach(function (w) {
-    //         cosimList.push({ 'word': w, 'cosim': cosinesim(vecObj[w]['Before'], vecObj[w]['After']) })
-    //     })
-    //     var sortedCosim = cosimList.sort(function (a, b) { return a.cosim > b.cosim })
-    //     console.log('sorted cosim list:', sortedCosim)
-    //     d3.select('#output0').text(sortedCosim.slice(100, 200).map(d => d.word).join(' '))
-    //     d3.select('#output1').text(sortedCosim.slice(-200, -100).map(d => d.word).join(' '))
-    // }
-                    })
                 })
+                console.log(lemmaCounter['война'])
+                data = data.filter(d => (theseWords.includes(d.lemma) && lemmaCounter[d.lemma] > 19) || lemmaCounter[d.lemma] > 299)
+                console.log(data)
+                console.log('result length:', data.length)
+                console.log(data)
+                drawChart(data, theseWords, translations)
+                // result = result.filter(d => d.word.includes('After'))
+                // var randomWords = new Set(getRandomSubarray(result.map(d => d.word.split('_')[0]), 100))
+                // newresult = result.filter(d => randomWords.has(d.word.split('_')[0]))
+
+
+
+
+                // d3.csv("notableWords.csv", function (data) {
+                //     var changedWords = data.different.trim().split(' ')
+                //     var sameWords = data.same.trim().split(' ')
+                //     result = result.filter(d => changedWords.includes(d.word.split('_')[0]))
+                //     drawChart(result)
+                // })
+
+
+                // function getRandomSubarray(arr, size) {
+                //     var shuffled = arr.slice(0), i = arr.length, temp, index;
+                //     while (i--) {
+                //         index = Math.floor((i + 1) * Math.random());
+                //         temp = shuffled[index];
+                //         shuffled[index] = shuffled[i];
+                //         shuffled[i] = temp;
+                //     }
+                //     return shuffled.slice(0, size);
+                // }
+                // console.log('calculating PCA...')
+                // var vectors = PCA.getEigenVectors(startvectors);
+                // var adData = PCA.computeAdjustedData(startvectors, vectors[0], vectors[1])
+                // var betterData = adData.formattedAdjustedData
+
+                // if (false) {
+                //     // cosine sim
+                //     var wordSet = new Set()
+                //     var vecObj = new Object()
+                //     result.forEach(function (elt) {
+                //         var wordRoot = elt.word.split('_')[0]
+                //         var BOA = elt.word.split('_')[1]
+                //         if (vecObj[wordRoot] == undefined) {
+                //             vecObj[wordRoot] = new Object()
+                //         }
+                //         vecObj[wordRoot][BOA] = elt.vector
+                //         wordSet.add(wordRoot)
+                //     })
+
+                //     console.log('calculating cosim')
+                //     var cosimList = []
+                //     wordSet.forEach(function (w) {
+                //         cosimList.push({ 'word': w, 'cosim': cosinesim(vecObj[w]['Before'], vecObj[w]['After']) })
+                //     })
+                //     var sortedCosim = cosimList.sort(function (a, b) { return a.cosim > b.cosim })
+                //     console.log('sorted cosim list:', sortedCosim)
+                //     d3.select('#output0').text(sortedCosim.slice(100, 200).map(d => d.word).join(' '))
+                //     d3.select('#output1').text(sortedCosim.slice(-200, -100).map(d => d.word).join(' '))
+                // }
             })
+        })
+    })
 });
