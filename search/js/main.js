@@ -1,3 +1,7 @@
+
+d3.select('#poemContainer').style('max-height',$(window).height()*.6+'px')
+d3.select('#resultsContainer').style('max-height',$(window).height()*.55+'px')
+
 let parseDate = d3.timeFormat("%b %d, %Y");
 
 let promises = [
