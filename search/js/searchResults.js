@@ -114,15 +114,27 @@ class SearchResults {
             'No War Poetry': 1650578403721,
             'ROAR V2': 1656109878113,
             'ROAR V3': 1661380278113,
+            
         }
         data.map(function (d) {
             if (Object.keys(dateObj).includes(d.Source)) {
                 d.date = dateObj[d.Source]
-            } else {
+            }
+             else {
                 d.date = d['Date posted']
             }
+            if (['None','','N/A'].includes(d.date)) {
+                if (d['Before or after'] == 'Before') {
+                    d.date = 1645654419000
+                } else {
+                    d.date = 1645827219000
+                }
+            }
+
+            
             //  d.dateStr = `${parseDate(new Date(d.date))}`
         })
+        
         data = data.sort((a, b) => a.date - b.date);
 
 
