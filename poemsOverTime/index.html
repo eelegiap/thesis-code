@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line Chart</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        svg {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Number of poems posted over time by source</h2>
+    <script>
+        // Replace this with your actual data
+        d3.json('data.json').then(data => {
+            // const data = [
+            //     { date: '1483228800000' }, // Jan 2017
+            //     { date: '1485907200000' }, // Feb 2017
+            //     // ... more data ...
+            //     { date: '1672444800000' }, // Dec 2022
+            // ];
+            var dateObj = {
+                'No War Poetry': 1650578403721,
+                'ROAR V2': 1656109878113,
+                'ROAR V3': 1661380278113,
+            }
+            data = data.filter(d => d.Source != 'Personal Telegram')
+            data.map(function (d) {
+                if (Object.keys(dateObj).includes(d.Source)) {
+                    d.date = dateObj[d.Source]
+                } else {
+                    d.date = d['Date posted']
+                }
+            })
+            // Parse dates and group data by quarters and sources
+            const groupedData = {};
+            data.forEach(d => {
+                d.date = new Date(parseInt(d.date));
+                const quarter = Math.floor(d.date.getMonth() / 3);
+                const quarterKey = `${d.date.getFullYear()}-Q${quarter + 1}`;
+                const source = d.Source;
+                if (!groupedData[source]) {
+                    groupedData[source] = {};
+                }
+                groupedData[source][quarterKey] = (groupedData[source][quarterKey] || 0) + 1;
+                console.log(source, groupedData[source])
+            });
+
+            // Create an array from the grouped data
+            const chartData = {};
+            for (const source in groupedData) {
+                chartData[source] = Object.entries(groupedData[source]).map(([key, value]) => {
+                    const [year, quarter] = key.split('-');
+                    const month = (parseInt(quarter.slice(1)) - 1) * 3;
+                    return { date: new Date(year, month), count: value };
+                });
+                // Sort the data points by date
+                chartData[source].sort((a, b) => a.date - b.date);
+                if (source.includes('Telegram')) {
+                    console.log(source, chartData[source])
+                }
+                
+            }
+
+            // Set up the chart dimensions
+            const margin = { top: 20, right: 100, bottom: 30, left: 50 };
+            const width = 960 - margin.left - margin.right;
+            const height = 500 - margin.top - margin.bottom;
+
+            // Create the SVG
+            const svg = d3.select("body")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+            // Set up the scales
+            const minDate = d3.min(Object.values(chartData).flat(), d => d.date);
+const maxDate = d3.max(Object.values(chartData).flat(), d => d.date);
+const x = d3.scaleTime()
+    .domain([minDate, maxDate])
+    .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([-5, d3.max(Object.values(chartData).flat(), d => d.count)])
+                .range([height, 0]);
+
+// Define an array of colors for the different sources
+const colors = d3.scaleOrdinal(d3.schemeCategory10);
+
+            // Create the line generator
+            const line = d3.line()
+                .x(d => x(d.date))
+                .y(d => y(d.count));
+
+// Add lines for each source
+Object.entries(chartData).forEach(([source, data]) => {
+    if (data.length > 1) {
+        // Draw a line if there is more than one data point for the source
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", colors(source))
+            .attr("stroke-width", 1.5)
+            .attr("d", line);
+    } else {
+        // Add circles for sources with only one data point
+        // Add circles for sources with only one data point
+        const circles = svg.selectAll("circle-" + source) // Update this line
+            .data(data)
+            .enter()
+            .append("g");
+
+        circles.append("circle")
+            .attr("cx", d => x(d.date))
+            .attr("cy", d => y(d.count))
+            .attr("r", 4)
+            .style("fill", colors(source));
+
+        circles.append("text")
+            .attr("x", d => x(d.date) + 5)
+            .attr("y", d => y(d.count) - 5)
+            .style("font-size", "12px")
+            .text(d => `${source} (${d.count} poems)`);
+    }
+});
+
+
+// Add the x-axis
+svg.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x)
+        .ticks(d3.utcMonth.every(6)) // Add this line for half-yearly ticks
+        .tickFormat(d3.timeFormat("%b '%y"))); // Add this line to format the ticks as "Month, Year" with an abbreviated year
+
+            // Add the y-axis
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+                
+
+// Create a legend
+const legend = svg.append('g')
+    .attr('class', 'legend')
+    .attr('transform', 'translate(' + (0 + 25) + ', 20)');
+
+// Add legend entries for each source
+Object.keys(groupedData).forEach((source, i) => {
+    const legendEntry = legend.append('g')
+        .attr('class', 'legend-entry')
+        .attr('transform', 'translate(0, ' + (i * 20) + ')');
+
+    // Add a colored rectangle for each source
+    legendEntry.append('rect')
+        .attr('width', 18)
+        .attr('height', 18)
+        .style('fill', colors(source));
+
+    // Add source label text
+    legendEntry.append('text')
+        .attr('x', 24)
+        .attr('y', 9)
+        .attr('dy', '.35em')
+        .style('text-anchor', 'start')
+        .text(source);
+});
+        })
+
+    </script>
+</body>
+
+</html>

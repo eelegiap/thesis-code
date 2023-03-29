@@ -1,5 +1,5 @@
 body {
-    padding-left: 3vh;
+    padding-left: 0vh;
     padding-top: 3vh;
     /* padding-bottom: 20px; */
 }
@@ -23,27 +23,27 @@ form {
     max-height: 500px;
     overflow: scroll
 }
-.result {
-    padding-left: 4vh;
-}
+/* .result {
+    padding-left: 3vh;
+} */
 .poemResult {
     cursor: pointer;
     border-radius: 10px;
-    padding-left: 10px;
-    padding-top: 5px;
+    /* padding-left: 10px; */
+    /* padding-top: 5px; */
 }
 
 #poemContainer {
-    max-height:  600px;
+    max-height: 500px;
     overflow-y: auto;
 }
 #poemMeta {
-    padding-top: 6vh;
-    padding-left: 15vh;
-    padding-bottom: 5vh
+    padding-top: 2vh;
+    padding-left: 5vh;
+    padding-bottom: 2vh
 }
 #poemTxt {
-    padding-left: 15vh;
+    padding-left: 4vh;
     padding-bottom: 10vh;
 }
 
@@ -106,5 +106,12 @@ input,
     text-align:left;
     padding-left:225px
 }
-
-  
+hr {
+    border: 1px dotted black;
+    border-style: none none dotted; 
+    color: #fff; 
+    background-color: #fff;
+    width:50%;
+    margin-left: 0 auto;
+    margin-right: 0 auto;
+}

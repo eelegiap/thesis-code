@@ -54,7 +54,8 @@ class SearchResults {
                 })
                 return inputFound
             })
-            dataByInput = dataByInput.sort((a, b) => a.Author.split(' ')[1] > b.Author.split(' ')[1])
+            // dataByInput = dataByInput.sort((a, b) => a.Author.split(' ')[1] > b.Author.split(' ')[1])
+            
         } else {
             console.log('input', input)
             var dataByInput = vis.data.filter(function (d) {
@@ -109,6 +110,22 @@ class SearchResults {
             }
         })
 
+        var dateObj = {
+            'No War Poetry': 1650578403721,
+            'ROAR V2': 1656109878113,
+            'ROAR V3': 1661380278113,
+        }
+        data.map(function (d) {
+            if (Object.keys(dateObj).includes(d.Source)) {
+                d.date = dateObj[d.Source]
+            } else {
+                d.date = d['Date posted']
+            }
+            //  d.dateStr = `${parseDate(new Date(d.date))}`
+        })
+        data = data.sort((a, b) => a.date - b.date);
+
+
         var resultsByPoem = d3.select('#results').selectAll('.poemResult')
             .data(data)
             .enter()
@@ -129,8 +146,8 @@ class SearchResults {
                 } else {
                     city = aInfo.City; country = aInfo.Country;
                 }
-
-                var date = d['Date posted'] != 'None' ? ` (${parseDate(new Date(d['Date posted']))})` : ''
+                
+                var date = ` (${parseDate(new Date(d.date))})`
                 return `<span style='font-size: 12px'><span style='color:${color}'>${d['Before or after']}${date}:</span>
                         <b>${d.Author}</b>, <i>${d.Source}</i> (${city}, ${country}) [${d.UniqueIndex}]</span>`
             })
