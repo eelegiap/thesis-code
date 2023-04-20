@@ -17,7 +17,7 @@
     <h2>Number of poems posted over time by source</h2>
     <script>
         // Replace this with your actual data
-        d3.json('data.json').then(data => {
+        d3.json('../../data.json').then(data => {
             // const data = [
             //     { date: '1483228800000' }, // Jan 2017
             //     { date: '1485907200000' }, // Feb 2017
@@ -36,6 +36,14 @@
                 } else {
                     d.date = d['Date posted']
                 }
+                if (['None', '', 'N/A'].includes(d.date)) {
+                    if (d['Before or after'] == 'Before') {
+                        d.date = 1645654419000
+                    } else {
+                        d.date = 1645827219000
+                    }
+                }
+                // console.log(typeof(d.date))
             })
             // Parse dates and group data by quarters and sources
             const groupedData = {};
@@ -61,14 +69,14 @@
                 });
                 // Sort the data points by date
                 chartData[source].sort((a, b) => a.date - b.date);
-                if (source.includes('Telegram')) {
-                    console.log(source, chartData[source])
-                }
-                
+                // if (source.includes('Telegram')) {
+                //     console.log(source, chartData[source])
+                // }
+                console.log(source, groupedData[source])
             }
 
             // Set up the chart dimensions
-            const margin = { top: 20, right: 100, bottom: 30, left: 50 };
+            const margin = { top: 20, right: 150, bottom: 30, left: 50 };
             const width = 960 - margin.left - margin.right;
             const height = 500 - margin.top - margin.bottom;
 
@@ -82,94 +90,94 @@
 
             // Set up the scales
             const minDate = d3.min(Object.values(chartData).flat(), d => d.date);
-const maxDate = d3.max(Object.values(chartData).flat(), d => d.date);
-const x = d3.scaleTime()
-    .domain([minDate, maxDate])
-    .range([0, width]);
+            const maxDate = d3.max(Object.values(chartData).flat(), d => d.date);
+            const x = d3.scaleTime()
+                .domain([minDate, maxDate])
+                .range([0, width]);
 
             const y = d3.scaleLinear()
                 .domain([-5, d3.max(Object.values(chartData).flat(), d => d.count)])
                 .range([height, 0]);
 
-// Define an array of colors for the different sources
-const colors = d3.scaleOrdinal(d3.schemeCategory10);
+            // Define an array of colors for the different sources
+            const colors = d3.scaleOrdinal(d3.schemeCategory10);
 
             // Create the line generator
             const line = d3.line()
                 .x(d => x(d.date))
                 .y(d => y(d.count));
 
-// Add lines for each source
-Object.entries(chartData).forEach(([source, data]) => {
-    if (data.length > 1) {
-        // Draw a line if there is more than one data point for the source
-        svg.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", colors(source))
-            .attr("stroke-width", 1.5)
-            .attr("d", line);
-    } else {
-        // Add circles for sources with only one data point
-        // Add circles for sources with only one data point
-        const circles = svg.selectAll("circle-" + source) // Update this line
-            .data(data)
-            .enter()
-            .append("g");
+            // Add lines for each source
+            Object.entries(chartData).forEach(([source, data]) => {
+                if (data.length > 1) {
+                    // Draw a line if there is more than one data point for the source
+                    svg.append("path")
+                        .datum(data)
+                        .attr("fill", "none")
+                        .attr("stroke", colors(source))
+                        .attr("stroke-width", 1.5)
+                        .attr("d", line);
+                } else {
+                    // Add circles for sources with only one data point
+                    // Add circles for sources with only one data point
+                    const circles = svg.selectAll("circle-" + source) // Update this line
+                        .data(data)
+                        .enter()
+                        .append("g");
 
-        circles.append("circle")
-            .attr("cx", d => x(d.date))
-            .attr("cy", d => y(d.count))
-            .attr("r", 4)
-            .style("fill", colors(source));
+                    circles.append("circle")
+                        .attr("cx", d => x(d.date))
+                        .attr("cy", d => y(d.count))
+                        .attr("r", 4)
+                        .style("fill", colors(source));
 
-        circles.append("text")
-            .attr("x", d => x(d.date) + 5)
-            .attr("y", d => y(d.count) - 5)
-            .style("font-size", "12px")
-            .text(d => `${source} (${d.count} poems)`);
-    }
-});
+                    circles.append("text")
+                        .attr("x", d => x(d.date) + 5)
+                        .attr("y", d => y(d.count) - 5)
+                        .style("font-size", "12px")
+                        .text(d => `${source} (${d.count} poems)`);
+                }
+            });
 
 
-// Add the x-axis
-svg.append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x)
-        .ticks(d3.utcMonth.every(6)) // Add this line for half-yearly ticks
-        .tickFormat(d3.timeFormat("%b '%y"))); // Add this line to format the ticks as "Month, Year" with an abbreviated year
+            // Add the x-axis
+            svg.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(x)
+                    .ticks(d3.utcMonth.every(6)) // Add this line for half-yearly ticks
+                    .tickFormat(d3.timeFormat("%b '%y"))); // Add this line to format the ticks as "Month, Year" with an abbreviated year
 
             // Add the y-axis
             svg.append("g")
                 .call(d3.axisLeft(y));
 
-                
 
-// Create a legend
-const legend = svg.append('g')
-    .attr('class', 'legend')
-    .attr('transform', 'translate(' + (0 + 25) + ', 20)');
 
-// Add legend entries for each source
-Object.keys(groupedData).forEach((source, i) => {
-    const legendEntry = legend.append('g')
-        .attr('class', 'legend-entry')
-        .attr('transform', 'translate(0, ' + (i * 20) + ')');
+            // Create a legend
+            const legend = svg.append('g')
+                .attr('class', 'legend')
+                .attr('transform', 'translate(' + (0 + 25) + ', 20)');
 
-    // Add a colored rectangle for each source
-    legendEntry.append('rect')
-        .attr('width', 18)
-        .attr('height', 18)
-        .style('fill', colors(source));
+            // Add legend entries for each source
+            Object.keys(groupedData).forEach((source, i) => {
+                const legendEntry = legend.append('g')
+                    .attr('class', 'legend-entry')
+                    .attr('transform', 'translate(0, ' + (i * 20) + ')');
 
-    // Add source label text
-    legendEntry.append('text')
-        .attr('x', 24)
-        .attr('y', 9)
-        .attr('dy', '.35em')
-        .style('text-anchor', 'start')
-        .text(source);
-});
+                // Add a colored rectangle for each source
+                legendEntry.append('rect')
+                    .attr('width', 18)
+                    .attr('height', 18)
+                    .style('fill', colors(source));
+
+                // Add source label text
+                legendEntry.append('text')
+                    .attr('x', 24)
+                    .attr('y', 9)
+                    .attr('dy', '.35em')
+                    .style('text-anchor', 'start')
+                    .text(source);
+            });
         })
 
     </script>

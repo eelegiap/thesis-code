@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Author Birth Cities Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" integrity="sha512-k6qg7Y5i5dIJxSx9MZlRIk90Z0ik4jb54blMJ4GOF8Wz94A7wzrLr0C+sAsiZ44MDtQWfYPy40b95M0IBFyHyw==" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
+        integrity="sha512-k6qg7Y5i5dIJxSx9MZlRIk90Z0ik4jb54blMJ4GOF8Wz94A7wzrLr0C+sAsiZ44MDtQWfYPy40b95M0IBFyHyw=="
+        crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -38,6 +40,7 @@
 </head>
 
 <body>
+    <h2>Distribution of authors by birthplace (post-Feb 24, 2023 dataset)</h2>
     <div id="map"></div>
     <script>
 
@@ -55,76 +58,83 @@
             // Object.values(place2coords).forEach(function(c) {
             //     console.log(typeof(c[0]))
             // })
-            d3.json("../notebooks/Thesis_Authors16.json").then(data => {
-                data = data.filter(d => Object.keys(place2coords).includes(`${d.City.trim()}, ${d.Country.trim()}`))
-                // Aggregate the authors per city
-                const cityAuthors = {};
-                data.forEach(author => {
-                    const key = `${author.City.trim()}, ${author.Country.trim()}`;
-                    if (!cityAuthors[key]) {
-                        cityAuthors[key] = {
-                            city: author.City,
-                            country: author.Country,
-                            authors: []
-                        };
+            d3.json("../search/data/poems_2023-02-23).json").then(poemdata => {
+                var includeAuthors = poemdata.filter(d => d['Before or after'] == 'After').map(p => p.Author)
+                d3.json("../notebooks/Thesis_Authors16.json").then(data => {
+                    console.log('includeAuthors', includeAuthors)
+                    console.log(data.length)
+                    data = data.filter(d => includeAuthors.includes(d.Author))
+                    console.log(data.length)
+                    data = data.filter(d => Object.keys(place2coords).includes(`${d.City.trim()}, ${d.Country.trim()}`))
+                    // Aggregate the authors per city
+                    const cityAuthors = {};
+                    data.forEach(author => {
+                        const key = `${author.City.trim()}, ${author.Country.trim()}`;
+                        if (!cityAuthors[key]) {
+                            cityAuthors[key] = {
+                                city: author.City,
+                                country: author.Country,
+                                authors: []
+                            };
+                        }
+                        cityAuthors[key].authors.push(author.Author);
+                    });
+                    const countries = ['Russia', 'Ukraine', 'Kazakhstan', 'Belarus', 'Uzbekistan',
+                        'Latvia', 'Moldova', 'Estonia', 'Kyrgyzstan', 'Azerbaijan',
+                        'Tajikistan', 'USA', 'Turkmenistan', 'Armenia', 'Iran', 'Georgia',
+                        'Lithuania']
+                    function color(cty) {
+                        if (d3.schemeCategory10[countries.indexOf(cty)]) {
+                            return d3.schemeCategory10[countries.indexOf(cty)]
+                        } else {
+                            return 'black'
+                        }
                     }
-                    cityAuthors[key].authors.push(author.Author);
-                });
-                const countries = ['Russia', 'Ukraine', 'Kazakhstan', 'Belarus', 'Uzbekistan',
-                    'Latvia', 'Moldova', 'Estonia', 'Kyrgyzstan', 'Azerbaijan',
-                    'Tajikistan', 'USA', 'Turkmenistan', 'Armenia', 'Iran', 'Georgia',
-                    'Lithuania']
-                function color(cty) {
-                    if (d3.schemeCategory10[countries.indexOf(cty)]) {
-                        return d3.schemeCategory10[countries.indexOf(cty)]
-                    } else {
-                        return 'black'
-                    }
-                }
-                // Get the coordinates for each city and add circles and tooltips to the map
-                const geocodePromises = Object.values(cityAuthors).map(async cityData => {
-                    const { city, country, authors } = cityData;
-                    const coords = place2coords[`${city}, ${country}`];
-                    if (coords) {
-                        const circle = L.circle(coords, {
-                            color: color(`${country}`),
-                            fillColor: color(`${country}`),
-                            fillOpacity: 0.5,
-                            radius: Math.sqrt(authors.length) * 30000
-                        }).addTo(map);
-                        // Add a tooltip with the author names
-                        circle.bindTooltip(`<b>${city}, ${country}</b><br>` + authors.join(', '), {
-                            direction: 'bottom', // position the tooltip above the circle
-                            offset: [0, 20], // adjust the position of the tooltip
-                            className: 'author-tooltip'
-                        });
-                        // Add a click event listener to the circle to show the popup with the city and country name
-                        circle.on('click', function () {
-                            L.popup({
-                                keepInView: true, // keep the popup in view when it opens
-                                closeButton: true, // show the popup's close button
-                                maxWidth: '300' // set the maximum width of the popup to the width of its content
-                            })
-                                .setLatLng(this.getLatLng())
-                                .setContent(`${city}, ${country}`)
-                                .openOn(map);
-                        });
-                        // Wait for the circle to be added to the map before accessing its properties
-                        await circle.on('add', () => {
-                            const latlng = circle._latlng;
-                            console.log(latlng);
-                        });
-                    } else {
-                        console.log(`Invalid coordinates for ${city}, ${country}`);
-                    }
-                });
-                // Wait for all geocode requests to complete
-                Promise.all(geocodePromises).then(() => {
-                    console.log("All cities added to the map.");
-                });
+                    // Get the coordinates for each city and add circles and tooltips to the map
+                    const geocodePromises = Object.values(cityAuthors).map(async cityData => {
+                        const { city, country, authors } = cityData;
+                        const coords = place2coords[`${city}, ${country}`];
+                        if (coords) {
+                            const circle = L.circle(coords, {
+                                color: color(`${country}`),
+                                fillColor: color(`${country}`),
+                                fillOpacity: 0.5,
+                                radius: Math.sqrt(authors.length) * 30000
+                            }).addTo(map);
+                            // Add a tooltip with the author names
+                            circle.bindTooltip(`<b>${city}, ${country}</b><br>` + authors.join(', '), {
+                                direction: 'bottom', // position the tooltip above the circle
+                                offset: [0, 20], // adjust the position of the tooltip
+                                className: 'author-tooltip'
+                            });
+                            // Add a click event listener to the circle to show the popup with the city and country name
+                            circle.on('click', function () {
+                                L.popup({
+                                    keepInView: true, // keep the popup in view when it opens
+                                    closeButton: true, // show the popup's close button
+                                    maxWidth: '300' // set the maximum width of the popup to the width of its content
+                                })
+                                    .setLatLng(this.getLatLng())
+                                    .setContent(`${city}, ${country}`)
+                                    .openOn(map);
+                            });
+                            // Wait for the circle to be added to the map before accessing its properties
+                            await circle.on('add', () => {
+                                const latlng = circle._latlng;
+                                console.log(latlng);
+                            });
+                        } else {
+                            console.log(`Invalid coordinates for ${city}, ${country}`);
+                        }
+                    });
+                    // Wait for all geocode requests to complete
+                    Promise.all(geocodePromises).then(() => {
+                        console.log("All cities added to the map.");
+                    });
 
-                
-            });
+
+                });
+            })
         })
     </script>
 </body>
