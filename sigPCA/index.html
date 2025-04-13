@@ -23,6 +23,9 @@
     <!-- <link rel="stylesheet" href="css/style.css"> -->
 
     <style>
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
         .gray {
             color: gray;
         }
@@ -63,14 +66,48 @@
             cursor: pointer;
             transform: translateX(50)
         }
+
+        #ioddropdown,
+        #dropdown {
+            display: inline-block;
+            margin-right: 25px;
+            margin-bottom: 20px;
+        }
+
+        /* Style the dropdown select elements */
+        select {
+            font-size: 16px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #50C878;
+            box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
+        }
+
+        /* Optional: Add a label above each dropdown */
+        .dropdown-label {
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: block;
+        }
     </style>
 
     <!-- <script src="{% static 'js/src/lib/api.js' %}"></script>
     <script src="{% static 'js/src/navec.js' %}"></script>
     <script src="{% static 'js/src/lib/d3-simple-slider.js' %}"></script> -->
-    
+
     <!-- <script src="https://d3js.org/d3.v6.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js" integrity="sha512-PLXQkW9K9twsr6kg2YomYaGdxSAEWSlr25vmbfxXxnYtDop+CPzidL8IDsQZMNPYF2UgLSLVyUxyAjwyTcMVtQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"
+        integrity="sha512-PLXQkW9K9twsr6kg2YomYaGdxSAEWSlr25vmbfxXxnYtDop+CPzidL8IDsQZMNPYF2UgLSLVyUxyAjwyTcMVtQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/pca-js@1.0.0/pca.min.js'></script>
 
@@ -83,9 +120,9 @@
         </div>
         <div class='row'>
             <h4>
-                All terms shown on the graph experienced a significant change in 
+                All terms shown on the graph experienced a significant change in
                 poem frequency in the subsets of the corpus from pre-invasion to post-invasion.
-                Graphs aid in identifying trends in the change of word frequency over time in the corpus. 
+                Graphs aid in identifying trends in the change of word frequency over time in the corpus.
             </h4>
             <h4>The process for calculating these vectors is:</h4>
             <ol>
@@ -94,19 +131,28 @@
                 <li>Convert these "significant" words to high-dim Russian word-embedding vectors</li>
                 <li>Project these embedding vectors to 2-dim using PCA and plot here by part of speech.</li>
             </ol>
-            
+
             <hr>
             <h3 id='graph-title' class='hide'></h3>
+            <p>
+                <bold>Pan rectangle on graph to zoom in. Double-click to zoom out. Adjust slider to show and hide forms
+                    on graph.</bold>
+            </p>
             <div>
-                <div id='ioddropdown'></div>
-                <div id='dropdown'></div>
+                <div id='ioddropdown'>
+                    <label class="dropdown-label">Words with frequency <bold>increase</bold> or <bold>decrease</bold>
+                        ?</label>
+                </div>
+                <div id='dropdown'>
+                    <label class="dropdown-label">Part of Speech</label>
+                </div>
             </div>
+
             <div id='graph'></div>
             <p id='graph-descript' class=hide></p>
-    
+
         </div>
     </div>
     <script src="../tsne.js"></script>
     <script src="sim.js"></script>
 </body>
-

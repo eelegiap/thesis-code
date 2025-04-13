@@ -21,9 +21,7 @@ function drawChart(result, iod, pos) {
   $("#graph-title").text(
     `2-D Representation of ${pos} in corpus which experienced a/n ${iod}`
   );
-  $("#graph-descript").text(
-    "Pan rectangle on graph to zoom in. Double-click to zoom out. Adjust slider to show and hide forms on graph."
-  );
+  $("#graph-descript").text("");
   $("#header1").css("display", "block");
   $("#header2").css("display", "block");
 
