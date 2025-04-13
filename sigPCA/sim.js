@@ -75,6 +75,9 @@ function drawChart(result, iod, pos) {
   var xAxis = d3.axisBottom(x).ticks(12);
   var yAxis = d3.axisLeft(y).ticks((12 * height) / width);
 
+  const originalXDomain = [xMin - 0.15, xMax + 1.5];
+  const originalYDomain = [yMin - 0.15, yMax + 0.5];
+
   var svg = d3
     .select("#graph")
     .append("svg")
@@ -90,6 +93,12 @@ function drawChart(result, iod, pos) {
     .append("rect")
     .attr("width", width)
     .attr("height", height);
+
+  svg.on("dblclick", function () {
+    x.domain(originalXDomain);
+    y.domain(originalYDomain);
+    zoom(); // Call zoom to re-render positions
+  });
 
   var scatter = svg
     .append("g")
@@ -170,13 +179,21 @@ function drawChart(result, iod, pos) {
 
   function zoom() {
     const t = scatter.transition().duration(750);
+
     svg.select("#axis--x").transition(t).call(xAxis);
     svg.select("#axis--y").transition(t).call(yAxis);
+
     scatter
       .selectAll("circle")
       .transition(t)
       .attr("cx", (d) => x(d.x))
       .attr("cy", (d) => y(d.y));
+
+    scatter
+      .selectAll("text")
+      .transition(t)
+      .attr("x", (d) => x(d.x) + 7)
+      .attr("y", (d) => y(d.y) + 7);
   }
 }
 
